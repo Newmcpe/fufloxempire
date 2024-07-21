@@ -182,8 +182,10 @@ export async function authKeyAuth(
 }
 
 export async function getMuskEmpireApiKey(
-  tg: TelegramClient,
+  clientName: string
 ) {
+  const tg = createTelegramClient(clientName);
+  await tg.start();
   const muskEmpirePeer = await tg.resolvePeer('muskempire_bot');
   const muskEmpireUser = toInputUser(muskEmpirePeer);
 
@@ -206,6 +208,7 @@ export async function getMuskEmpireApiKey(
 
   initDataRaw = decodeURIComponent(initDataRaw);
 
+ await tg.close();
   return {
 	initData: initDataRaw,
 	apiKey: initDataRaw.split('hash=')[1].split('&')[0]

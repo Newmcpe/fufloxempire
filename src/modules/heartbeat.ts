@@ -11,9 +11,8 @@ const log = Logger.create('[HEARTBEAT]');
 
 export async function startHeartbeat() {
   for (const account of Object.values(storage.data.accounts)) {
-	const tg = createTelegramClient(account.clientName);
-	await tg.start();
-	const authData = await getMuskEmpireApiKey(tg);
+
+	const authData = await getMuskEmpireApiKey(account.clientName);
 
 	await authByTelegramWebApp({
 	  data: {
@@ -40,6 +39,8 @@ async function accountHeartbeat(account: MuskEmpireAccount, apiKey: string) {
 	  'Ошибка при обновлении аккаунта:',
 	  e
 	);
+
+	apiKey = (await getMuskEmpireApiKey(account.clientName)).apiKey;
   } finally {
 	setTimeout(accountHeartbeat, 1000, account, apiKey);
   }
