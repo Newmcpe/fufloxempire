@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "target": "es2020",
+        "allowJs": true,
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "inlineSources": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "baseUrl": "src",
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "incremental": true,
+        "skipLibCheck": true,
+        "paths": {
+            "": [
+                "node_modules/*",
+                "src/*"
+            ],
+        }
+    },
+    "include": [
+        "./src"
+    ],
+    "ts-node": {
+        "esm": true,
+        "experimentalSpecifierResolution": "node"
+    },
+    "exclude": [
+        "**/node_modules",
+    ]
+}

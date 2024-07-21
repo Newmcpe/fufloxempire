@@ -1,0 +1,52 @@
+{
+  "name": "fuflomaskempire",
+  "license": "MIT",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "prepare": "husky || true",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "start": "tsc && tsc-alias && dotenv node ./dist/index.js",
+    "start-bun" : "bun x tsx --env-file=.env ./src/index.ts",
+    "build": "tsc && tsc-alias"
+  },
+  "dependencies": {
+    "@lolzteam/sdk": "^0.2.6",
+    "@mtcute/convert": "^0.13.0",
+    "@mtcute/crypto-node": "^0.13.0",
+    "@mtcute/dispatcher": "^0.13.4",
+    "@mtcute/http-proxy": "^0.13.0",
+    "@mtcute/node": "^0.13.0",
+    "@starkow/logger": "^2.3.1",
+    "axios": "^1.7.2",
+    "enquirer": "^2.4.1",
+    "long": "^5.2.3",
+    "lowdb": "^7.0.1",
+    "random": "^4.1.0",
+    "retrofit-axios-ts": "^1.0.9",
+    "user-agents": "^1.1.244",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.8",
+    "@types/user-agents": "^1.0.4",
+    "@types/uuid": "^9.0.8",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
+    "dotenv-cli": "^7.4.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-ascii": "^1.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-perfectionist": "^2.11.0",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.3.2",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.5.2"
+  }
+}
