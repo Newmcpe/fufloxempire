@@ -23,3 +23,6 @@ pnpm install
 copy .env-example .env # Укажите API_ID и API_HASH своего приложения в Telegram
 pnpm start
 ```
+
+## Благодарность
+✨ Если вам понравился бот и вы хотите поддержать автора, вы можете сделать это зарегистрировавшись по [реферальной ссылке](https://t.me/muskempire_bot/game?startapp=hero277588744) автора. Спасибо :3 ❤️
