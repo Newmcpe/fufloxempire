@@ -4,7 +4,9 @@ import { setupNewAccount } from './onboarding.js';
 import { Config, defaultConfig } from './util/config-schema.js';
 import { startHeartbeat } from 'modules/heartbeat.js';
 import axios from 'axios';
+import * as process from 'node:process';
 
+console.log(process.env.ACTION);
 export const storage = JSONFileSyncPreset<Config>('config.json', defaultConfig);
 if (!storage.data.accounts) {
     await setupNewAccount(true);
@@ -24,24 +26,26 @@ axios.interceptors.response.use(
     }
 );
 
-const menuResponse = await enquirer.prompt<{
-    action: 'add' | 'run';
-}>({
-    type: 'select',
-    name: 'action',
-    message: '📝 Запустить бота?',
-    initial: 0,
-    choices: [
-        {
-            name: 'run',
-            message: 'Запустить бота',
-        },
-        {
-            name: 'add',
-            message: 'Добавить новый аккаунт',
-        },
-    ],
-});
+const menuResponse = !!process.env.ACTION
+    ? { action: process.env.ACTION }
+    : await enquirer.prompt<{
+          action: 'add' | 'run';
+      }>({
+          type: 'select',
+          name: 'action',
+          message: '📝 Запустить бота?',
+          initial: 0,
+          choices: [
+              {
+                  name: 'run',
+                  message: 'Запустить бота',
+              },
+              {
+                  name: 'add',
+                  message: 'Добавить новый аккаунт',
+              },
+          ],
+      });
 
 switch (menuResponse.action) {
     case 'run':
