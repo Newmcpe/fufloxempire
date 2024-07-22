@@ -16,6 +16,7 @@ let strategy = strategies[1];
 
 let wins = 0;
 let losses = 0;
+let income = 0;
 
 export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     if (!isCooldownOver('noPvpUntil', account)) return;
@@ -42,6 +43,8 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     const result = fight.winner === hero.id;
 
     if (!result) {
+        income -= fight.moneyContract;
+
         losses++;
         loseStreak++;
 
@@ -50,6 +53,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
             strategy =
                 strategies[Math.floor(Math.random() * strategies.length)];
 
+            loseStreak = 0;
             log.info(
                 Logger.color(account.clientName, Color.Cyan),
                 Logger.color('|', Color.Gray),
@@ -64,6 +68,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
             return;
         }
     } else {
+        income += fight.moneyProfit;
         wins++;
         loseStreak = 0;
     }
@@ -80,6 +85,11 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         `|`,
         `Стратегия героя:`,
         Logger.color(strategy, Color.Yellow),
+        `|`,
+        'Доход:',
+        income > 0
+            ? Logger.color(`+${income} 🪙`, Color.Green)
+            : Logger.color(`${income} 🪙`, Color.Red),
         `|`,
         'Результат:',
         result

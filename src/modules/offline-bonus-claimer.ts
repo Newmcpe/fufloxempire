@@ -24,7 +24,7 @@ export const offlineBonusClaimer = async (
             Logger.color(account.clientName, Color.Cyan),
             Logger.color(' | ', Color.Gray),
             `Успешно собрано оффлайн бонусов`,
-            Logger.color(`+(${heroInfo.offlineBonus} 🪙)`, Color.Green)
+            Logger.color(`(+${heroInfo.offlineBonus} 🪙)`, Color.Green)
         );
     }
 

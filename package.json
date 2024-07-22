@@ -9,7 +9,7 @@
     "lint:fix": "eslint --fix .",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "tsc && tsc-alias && dotenv node ./dist/index.js",
-    "start-bun" : "bun x tsx --env-file=.env ./src/index.ts",
+    "start-bun": "bun x tsx --env-file=.env ./src/index.ts",
     "build": "tsc && tsc-alias"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "@starkow/logger": "^2.3.1",
     "axios": "^1.7.2",
     "enquirer": "^2.4.1",
+    "https-proxy-agent": "^7.0.5",
     "long": "^5.2.3",
     "lowdb": "^7.0.1",
     "random": "^4.1.0",

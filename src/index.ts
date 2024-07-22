@@ -5,8 +5,6 @@ import { Config, defaultConfig } from './util/config-schema.js';
 import { startHeartbeat } from 'modules/heartbeat.js';
 import axios from 'axios';
 import * as process from 'node:process';
-
-console.log(process.env.ACTION);
 export const storage = JSONFileSyncPreset<Config>('config.json', defaultConfig);
 if (!storage.data.accounts) {
     await setupNewAccount(true);
