@@ -26,15 +26,26 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
         .filter((upgrade) => {
             const nextLevel = upgrade.currentLevel + 1;
 
-            const requirement = upgrade.levels.find(
-                (requirement) => requirement.level >= nextLevel
-            )!;
+            const requirement =
+                upgrade.levels.find(
+                    (requirement) => requirement.level >= nextLevel
+                ) || upgrade.levels[upgrade.levels.length - 1];
 
-            return (
-                upgrade.priceNextLevel <= heroInfo.money &&
-                requirement?.requiredHeroLevel <= heroInfo.level &&
-                requirement.requiredFriends <= profileInfo.friends
-            );
+            try {
+                return (
+                    upgrade.priceNextLevel <= heroInfo.money &&
+                    requirement.requiredHeroLevel <= heroInfo.level &&
+                    requirement.requiredFriends <= profileInfo.friends &&
+                    Object.entries(requirement.requiredSkills).every(
+                        ([skillId, skillLevel]) =>
+                            upgrades.find((u) => u.id === skillId)!
+                                .currentLevel >= skillLevel
+                    )
+                );
+            } catch (e) {
+                console.log(e, upgrade);
+                process.exit(1);
+            }
         })
         .reduce(
             (best, upgrade) =>

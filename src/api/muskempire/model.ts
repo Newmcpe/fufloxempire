@@ -27,7 +27,7 @@ export type DbSkill = {
 export type SkillRequirement = {
     level: number;
     title: string;
-    requiredSkills: Array<any>;
+    requiredSkills: Record<string, number>;
     requiredHeroLevel: number;
     requiredFriends: number;
     desc: string;
