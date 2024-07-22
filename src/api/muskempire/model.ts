@@ -21,14 +21,16 @@ export type DbSkill = {
     timeFormulaK: string;
     desc: string;
     special: string;
-    levels: Array<{
-        level: number;
-        title: string;
-        requiredSkills: Array<any>;
-        requiredHeroLevel: number;
-        requiredFriends: number;
-        desc: string;
-    }>;
+    levels: SkillRequirement[];
+};
+
+export type SkillRequirement = {
+    level: number;
+    title: string;
+    requiredSkills: Array<any>;
+    requiredHeroLevel: number;
+    requiredFriends: number;
+    desc: string;
 };
 
 export type SkillsResponse = {
@@ -41,64 +43,6 @@ export type SkillsResponse = {
         }
     >;
 };
-
-//{
-//     "success": true,
-//     "data": {
-//         "id": 277588744,
-//         "level": 7,
-//         "exp": 7051550,
-//         "money": 298932,
-//         "moneyUpdateDate": "2024-07-21 13:31:04",
-//         "moneyPerHour": 466100,
-//         "energyUpdateDate": "2024-07-21 13:31:45",
-//         "tax": 20,
-//         "pvpMatch": 48,
-//         "pvpWin": 32,
-//         "pvpLose": 16,
-//         "earns": {
-//             "task": {
-//                 "moneyPerTap": 12,
-//                 "limit": 7000,
-//                 "energy": 7000,
-//                 "recoveryPerSecond": 10
-//             },
-//             "sell": {
-//                 "moneyPerTap": 9,
-//                 "limit": 3000,
-//                 "energy": 3000,
-//                 "recoveryPerSecond": 10
-//             }
-//         },
-//         "dailyRewardLastDate": "2024-07-21 03:21:04",
-//         "dailyRewardLastIndex": 2,
-//         "onboarding": [
-//             "1",
-//             "40",
-//             "10180",
-//             "20",
-//             "10000",
-//             "21",
-//             "10340",
-//             "80",
-//             "10380",
-//             "90",
-//             "60",
-//             "10020",
-//             "51",
-//             "30",
-//             "70",
-//             "10040",
-//             "50",
-//             "10160",
-//             "10420",
-//             "31"
-//         ],
-//         "updateDate": "2024-07-20 19:45:48.856377",
-//         "userId": 277588744,
-//         "offlineBonus": 5308
-//     }
-// }
 
 export type Hero = {
     id: number;
@@ -163,5 +107,42 @@ export type FightResponse = {
         opponent?: {
             name: string;
         };
+    };
+};
+//{
+//     "success": true,
+//     "data": {
+//         "id": 277588744,
+//         "avatar": "/src/assets/img/heroes/avatar.png",
+//         "firstName": "Алина",
+//         "lastName": "",
+//         "userName": "Newmcpe",
+//         "isPremium": true,
+//         "friends": 15,
+//         "refCode": "hero277588744",
+//         "registrationDate": "2024-07-20 19:44:44",
+//         "photoUrl": null,
+//         "isCanConnectFriend": true,
+//         "isBetaTester": false,
+//         "walletBalance": 0,
+//         "notcoinTier": 1
+//     }
+// }
+export type ProfileInfoResponse = {
+    data: {
+        id: number;
+        avatar: string;
+        firstName: string;
+        lastName: string;
+        userName: string;
+        isPremium: boolean;
+        friends: number;
+        refCode: string;
+        registrationDate: string;
+        photoUrl: string;
+        isCanConnectFriend: boolean;
+        isBetaTester: boolean;
+        walletBalance: number;
+        notcoinTier: number;
     };
 };

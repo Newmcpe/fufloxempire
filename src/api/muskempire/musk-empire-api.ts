@@ -4,6 +4,7 @@ import {
     FightResponse,
     HeroInfoResponse,
     LoadDbResponse,
+    ProfileInfoResponse,
     SkillsResponse,
 } from './model.js';
 
@@ -103,6 +104,15 @@ const fightPvp = async (
         }
     );
 
+const getProfileInfo = async (
+    token: string
+): Promise<AxiosResponse<ProfileInfoResponse>> =>
+    axios.get(`${BASE_DOMAIN}/profile/info`, {
+        headers: {
+            'Api-Key': token,
+        },
+    });
+
 export {
     loadDb,
     skills,
@@ -112,4 +122,5 @@ export {
     claimOfflineBonus,
     fightPvp,
     claimPvp,
+    getProfileInfo,
 };

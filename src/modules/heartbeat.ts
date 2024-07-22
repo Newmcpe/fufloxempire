@@ -22,7 +22,7 @@ async function accountHeartbeat(account: MuskEmpireAccount, apiKey: string) {
     try {
         await offlineBonusClaimer(account, apiKey);
         await upgrader(account, apiKey);
-        await combater(account, apiKey);
+        //     await combater(account, apiKey);
     } catch (e) {
         log.error(
             Logger.color(account.clientName, Color.Cyan),

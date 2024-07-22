@@ -2,6 +2,7 @@ import { MuskEmpireAccount } from '../util/config-schema.js';
 import { getUpgrades, Upgrade } from '../api/muskempire/musk-empire-service.js';
 import {
     getHeroInfo,
+    getProfileInfo,
     improveSkill,
 } from '../api/muskempire/musk-empire-api.js';
 import { Color, Logger } from '@starkow/logger';
@@ -17,8 +18,24 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
     const {
         data: { data: heroInfo },
     } = await getHeroInfo(apiKey);
+    const {
+        data: { data: profileInfo },
+    } = await getProfileInfo(apiKey);
+
     const bestUpgrade = upgrades
-        .filter((upgrade) => upgrade.priceNextLevel <= heroInfo.money)
+        .filter((upgrade) => {
+            const nextLevel = upgrade.currentLevel + 1;
+
+            const requirement = upgrade.levels.find(
+                (requirement) => requirement.level >= nextLevel
+            )!;
+
+            return (
+                upgrade.priceNextLevel <= heroInfo.money &&
+                requirement?.requiredHeroLevel <= heroInfo.level &&
+                requirement.requiredFriends <= profileInfo.friends
+            );
+        })
         .reduce(
             (best, upgrade) =>
                 best === null ||
