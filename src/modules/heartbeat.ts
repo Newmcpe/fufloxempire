@@ -6,6 +6,7 @@ import { createTelegramClient, getMuskEmpireApiKey } from '../onboarding.js';
 import { authByTelegramWebApp } from '../api/muskempire/musk-empire-api.js';
 import { upgrader } from './upgrader.js';
 import { offlineBonusClaimer } from './offline-bonus-claimer.js';
+import { combater } from './combater.js';
 
 const log = Logger.create('[HEARTBEAT]');
 
@@ -21,6 +22,7 @@ async function accountHeartbeat(account: MuskEmpireAccount, apiKey: string) {
     try {
         await offlineBonusClaimer(account, apiKey);
         await upgrader(account, apiKey);
+        await combater(account, apiKey);
     } catch (e) {
         log.error(
             Logger.color(account.clientName, Color.Cyan),

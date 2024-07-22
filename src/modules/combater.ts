@@ -1,6 +1,10 @@
 import { MuskEmpireAccount } from '../util/config-schema.js';
 import { Color, Logger } from '@starkow/logger';
-import { claimPvp, fightPvp } from '../api/muskempire/musk-empire-api.js';
+import {
+    claimPvp,
+    fightPvp,
+    getHeroInfo,
+} from '../api/muskempire/musk-empire-api.js';
 import { isCooldownOver, setCooldown } from './heartbeat.js';
 
 const log = Logger.create('[Combater]');
@@ -15,6 +19,17 @@ let losses = 0;
 
 export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     if (!isCooldownOver('noPvpUntil', account)) return;
+
+    const {
+        data: {
+            data: { money },
+        },
+    } = await getHeroInfo(apiKey);
+
+    if (money < 25000) {
+        setCooldown('noPvpUntil', account, 30);
+        return;
+    }
 
     const {
         data: {

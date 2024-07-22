@@ -6,6 +6,7 @@ import { DC_MAPPING_PROD } from '@mtcute/convert';
 import { defaultHamsterAccount, Proxy } from './util/config-schema.js';
 import { toInputUser } from '@mtcute/node/utils.js';
 import { storage } from './index.js';
+import { authByTelegramWebApp } from './api/muskempire/musk-empire-api.js';
 
 export async function setupNewAccount(firstTime = false) {
     const { authMethod, clientName } = await enquirer.prompt<{
@@ -204,6 +205,19 @@ export async function getMuskEmpireApiKey(clientName: string) {
 
     initDataRaw = decodeURIComponent(initDataRaw);
 
+    await authByTelegramWebApp(
+        {
+            data: {
+                initData: initDataRaw,
+                platform: 'android',
+                chatId: '',
+                chatType: 'sender',
+                chatInstance: '-8493099482055851733',
+            },
+        },
+        null
+    );
+
     await tg.close();
     return {
         initData: initDataRaw,
@@ -215,7 +229,7 @@ export function createTelegramClient(clientName: string) {
     let opts: BaseTelegramClientOptions = {
         apiId: API_ID,
         apiHash: API_HASH,
-        logLevel: 5,
+        logLevel: 0,
         storage: `bot-data/${clientName}`,
     };
 
