@@ -32,17 +32,15 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         return;
     }
 
-    const {
-        data: { data },
-    } = await fightPvp(apiKey, 'bronze', strategy);
-
-    if (!data) {
+    const { data } = await fightPvp(apiKey, 'bronze', strategy);
+    if (!data.data) {
         console.log('No data found', data);
     }
 
-    if (!data.opponent) return;
+    const muskResponse = data.data;
+    if (!muskResponse.opponent) return;
 
-    const { hero, opponent, fight } = data;
+    const { hero, opponent, fight } = muskResponse;
 
     const result = fight.winner === hero.id;
 
@@ -54,9 +52,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
 
         if (loseStreak >= 4) {
             await claimPvp(apiKey);
-            strategy = strategies.filter((s) => s !== strategy)[
-                Math.floor(Math.random() * strategies.length - 1)
-            ];
+            strategy = getRandomValue(strategies.filter((s) => s !== strategy));
 
             loseStreak = 0;
             log.info(
@@ -108,3 +104,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         )
     );
 };
+function getRandomValue<T>(arr: T[]): T {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    return arr[randomIndex];
+}
