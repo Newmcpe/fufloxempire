@@ -12,7 +12,7 @@ import axios from 'axios';
 import * as process from 'node:process';
 
 export const storage = JSONFileSyncPreset<Config>(
-    process.env.CONFIG_PATH || '' + 'config.json',
+    (process.env.CONFIG_PATH || '') + 'config.json',
     defaultConfig
 );
 storage.update((data) => {
@@ -33,7 +33,7 @@ storage.update((data) => {
     });
 });
 
-if (!storage.data.accounts) {
+if (Object.keys(storage.data.accounts).length == 0) {
     await setupNewAccount(true);
 }
 
@@ -59,12 +59,12 @@ const menuResponse = !!process.env.ACTION
       }>({
           type: 'select',
           name: 'action',
-          message: '📝 Запустить бота? (Launch the bot?)',
+          message: '📝 Запустить бота? ',
           initial: 0,
           choices: [
               {
                   name: 'run',
-                  message: 'Запустить бота (Launch the bot)',
+                  message: 'Запустить бота',
               },
               {
                   name: 'add',
