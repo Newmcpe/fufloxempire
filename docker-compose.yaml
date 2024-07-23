@@ -8,7 +8,4 @@ services:
       - .env
     volumes:
       - ./bot-data:/app/bot-data
-      - ./.config.json.tmp:/app/.config.json.tmp
-      - type: bind
-        source: ./config.json
-        target: /app/config.json
+      - ./cfg:/app/cfg

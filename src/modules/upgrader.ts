@@ -29,7 +29,13 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             const requirement =
                 upgrade.levels.find(
                     (requirement) => requirement.level >= nextLevel
-                ) || upgrade.levels[upgrade.levels.length - 1];
+                ) || upgrade.levels.length > 0
+                    ? upgrade.levels[upgrade.levels.length - 1]
+                    : {
+                          requiredHeroLevel: 0,
+                          requiredFriends: 0,
+                          requiredSkills: {},
+                      };
 
             try {
                 return (
@@ -44,7 +50,6 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
                 );
             } catch (e) {
                 console.log(e, upgrade);
-                process.exit(1);
             }
         })
         .reduce(

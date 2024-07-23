@@ -8,4 +8,4 @@ private/
 *.log
 *.tsbuildinfo
 .env
-config.json
+cfg

@@ -10,6 +10,12 @@ import { combater } from './combater.js';
 
 const log = Logger.create('[HEARTBEAT]');
 
+const modules = {
+    upgrader: upgrader,
+    'offline-bonus-claimer': offlineBonusClaimer,
+    combater: combater,
+};
+
 export async function startHeartbeat() {
     for (const account of Object.values(storage.data.accounts)) {
         const authData = await getMuskEmpireApiKey(account.clientName);
@@ -20,9 +26,10 @@ export async function startHeartbeat() {
 
 async function accountHeartbeat(account: MuskEmpireAccount, apiKey: string) {
     try {
-        await offlineBonusClaimer(account, apiKey);
-        await upgrader(account, apiKey);
-        await combater(account, apiKey);
+        for (const module of account.modules) {
+            const key = module as keyof typeof modules;
+            await modules[key](account, apiKey);
+        }
     } catch (e) {
         log.error(
             Logger.color(account.clientName, Color.Cyan),

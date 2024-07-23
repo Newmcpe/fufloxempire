@@ -12,6 +12,7 @@ export type Proxy = {
 export type MuskEmpireAccount = {
     clientName: string;
     currentCooldowns: Cooldowns;
+    modules: string[];
 };
 
 export type Cooldowns = {
@@ -24,11 +25,12 @@ export const defaultConfig: Config = {
     accounts: {},
 };
 
-export const defaultHamsterAccount = {
+export const defaultMuskEmpireAccount = {
     clientName: '',
     currentCooldowns: {
         noUpgradesUntil: 0,
         noOfflineBonusUntil: 0,
         noPvpUntil: 0,
     },
+    modules: ['upgrader', 'offline-bonus-claimer', 'combater'],
 };
