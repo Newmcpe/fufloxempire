@@ -13,6 +13,10 @@ export type MuskEmpireAccount = {
     clientName: string;
     currentCooldowns: Cooldowns;
     modules: string[];
+    preferences: {
+        minimalBalance: number;
+        minimalFightBalance: number;
+    };
 };
 
 export type Cooldowns = {
@@ -31,6 +35,10 @@ export const defaultMuskEmpireAccount = {
         noUpgradesUntil: 0,
         noOfflineBonusUntil: 0,
         noPvpUntil: 0,
+    },
+    preferences: {
+        minimalBalance: 1000,
+        minimalFightBalance: 25000,
     },
     modules: ['upgrader', 'offline-bonus-claimer', 'combater'],
 };

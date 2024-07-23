@@ -27,7 +27,10 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         },
     } = await getHeroInfo(apiKey);
 
-    if (money < 25000) {
+    if (
+        money < account.preferences.minimalBalance ||
+        money < account.preferences.minimalFightBalance
+    ) {
         setCooldown('noPvpUntil', account, 30);
         return;
     }

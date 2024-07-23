@@ -22,6 +22,11 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
         data: { data: profileInfo },
     } = await getProfileInfo(apiKey);
 
+    if (heroInfo.money < account.preferences.minimalBalance) {
+        setCooldown('noUpgradesUntil', account, 600);
+        return;
+    }
+
     const bestUpgrade = upgrades
         .filter((upgrade) => {
             const nextLevel = upgrade.currentLevel + 1;
@@ -30,7 +35,7 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
                 upgrade.levels.find(
                     (requirement) => requirement.level >= nextLevel
                 ) || upgrade.levels.length > 0
-                    ? upgrade.levels[upgrade.levels.length - 1]
+                    ? upgrade.levels[0]
                     : {
                           requiredHeroLevel: 0,
                           requiredFriends: 0,
@@ -40,7 +45,6 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             try {
                 return (
                     upgrade.priceNextLevel <= heroInfo.money &&
-                    upgrade.profitIncrement * 72 >= upgrade.priceNextLevel &&
                     requirement.requiredHeroLevel <= heroInfo.level &&
                     requirement.requiredFriends <= profileInfo.friends &&
                     Object.entries(requirement.requiredSkills).every(
