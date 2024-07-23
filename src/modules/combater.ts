@@ -36,7 +36,11 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         data: { data },
     } = await fightPvp(apiKey, 'bronze', strategy);
 
-    if (!data || !data.opponent) return;
+    if (!data) {
+        console.log('No data found', data);
+    }
+
+    if (!data.opponent) return;
 
     const { hero, opponent, fight } = data;
 
