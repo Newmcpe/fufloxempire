@@ -33,12 +33,12 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     }
 
     const {
-        data: {
-            data: { opponent, fight, hero },
-        },
+        data: { data },
     } = await fightPvp(apiKey, 'bronze', strategy);
 
-    if (!opponent) return;
+    if (!data || !data.opponent) return;
+
+    const { hero, opponent, fight } = data;
 
     const result = fight.winner === hero.id;
 
