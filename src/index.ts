@@ -12,7 +12,7 @@ import axios from 'axios';
 import * as process from 'node:process';
 
 export const storage = JSONFileSyncPreset<Config>(
-    process.env.CONFIG_PATH + 'config.json',
+    process.env.CONFIG_PATH || '' + 'config.json',
     defaultConfig
 );
 storage.update((data) => {
