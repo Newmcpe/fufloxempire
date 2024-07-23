@@ -15,10 +15,10 @@ Bot for automatically leveling up an account in Musk Empire
 
 ## Functionality
 
-| Функция                             | Статус |
+| Function                            | Status |
 |-------------------------------------|:------:|
-| Включение и отключение модулей бота |   ✅    |
-| Настройка задержек                  |   ⌛    |
+| Disabling modules for every account |   ✅    |
+| Delay settings for accounts         |   ⌛    |
 
 ## Launch
 
