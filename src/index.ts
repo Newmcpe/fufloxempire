@@ -15,23 +15,23 @@ export const storage = JSONFileSyncPreset<Config>(
     process.env.CONFIG_PATH + 'config.json',
     defaultConfig
 );
-// storage.update((data) => {
-//     Object.entries(data.accounts).forEach(([key, account]) => {
-//         Object.keys(defaultMuskEmpireAccount).forEach((defaultKey) => {
-//             const keyOfAccount = defaultKey as keyof MuskEmpireAccount;
-//
-//             // Check if the current key is undefined in the account
-//             if (account[keyOfAccount] === undefined) {
-//                 // If undefined, assign the value from defaultMuskEmpireAccounts
-//                 account[keyOfAccount] = defaultMuskEmpireAccount[
-//                     keyOfAccount
-//                 ] as any;
-//             }
-//         });
-//         // Update the account in storage
-//         data.accounts[key] = account;
-//     });
-// });
+storage.update((data) => {
+    Object.entries(data.accounts).forEach(([key, account]) => {
+        Object.keys(defaultMuskEmpireAccount).forEach((defaultKey) => {
+            const keyOfAccount = defaultKey as keyof MuskEmpireAccount;
+
+            // Check if the current key is undefined in the account
+            if (account[keyOfAccount] === undefined) {
+                // If undefined, assign the value from defaultMuskEmpireAccounts
+                account[keyOfAccount] = defaultMuskEmpireAccount[
+                    keyOfAccount
+                ] as any;
+            }
+        });
+        // Update the account in storage
+        data.accounts[key] = account;
+    });
+});
 
 if (!storage.data.accounts) {
     await setupNewAccount(true);
@@ -59,23 +59,22 @@ const menuResponse = !!process.env.ACTION
       }>({
           type: 'select',
           name: 'action',
-          message: '📝 Запустить бота?',
+          message: '📝 Запустить бота? (Launch the bot?)',
           initial: 0,
           choices: [
               {
                   name: 'run',
-                  message: 'Запустить бота',
+                  message: 'Запустить бота (Launch the bot)',
               },
               {
                   name: 'add',
-                  message: 'Добавить новый аккаунт',
+                  message: 'Добавить новый аккаунт (Add a new account)',
               },
           ],
       });
 
 switch (menuResponse.action) {
     case 'run':
-        console.log('запуск бота');
         await startHeartbeat();
         break;
     case 'add':
