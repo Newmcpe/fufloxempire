@@ -19,6 +19,7 @@ Bot for automatically leveling up an account in Musk Empire
 |-------------------------------------|:------:|
 | Disabling modules for every account |   ✅    |
 | Delay settings for accounts         |   ⌛    |
+| Minimum balance settings            |   ✅    |
 
 ## Launch
 
