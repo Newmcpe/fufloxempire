@@ -40,6 +40,7 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             try {
                 return (
                     upgrade.priceNextLevel <= heroInfo.money &&
+                    upgrade.profitIncrement * 72 >= upgrade.priceNextLevel &&
                     requirement.requiredHeroLevel <= heroInfo.level &&
                     requirement.requiredFriends <= profileInfo.friends &&
                     Object.entries(requirement.requiredSkills).every(
