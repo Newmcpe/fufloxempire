@@ -22,11 +22,6 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
         data: { data: profileInfo },
     } = await getProfileInfo(apiKey);
 
-    if (heroInfo.money < account.preferences.minimalBalance) {
-        setCooldown('noUpgradesUntil', account, 600);
-        return;
-    }
-
     const bestUpgrade = upgrades
         .filter((upgrade) => {
             const nextLevel = upgrade.currentLevel + 1;
@@ -73,6 +68,14 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             Logger.color(' | ', Color.Gray),
             `Нет доступных улучшений`
         );
+        setCooldown('noUpgradesUntil', account, 600);
+        return;
+    }
+
+    if (
+        heroInfo.money - bestUpgrade.priceNextLevel <
+        account.preferences.minimalBalance
+    ) {
         setCooldown('noUpgradesUntil', account, 600);
         return;
     }
