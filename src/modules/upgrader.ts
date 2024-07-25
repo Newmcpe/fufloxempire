@@ -18,17 +18,10 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
     const {
         data: { data: heroInfo },
     } = await getHeroInfo(apiKey);
-    const {
-        data: { data: profileInfo },
-    } = await getProfileInfo(apiKey);
 
     const bestUpgrade = upgrades
         .filter((upgrade) => {
-            return (
-                upgrade.isCanUpgraged &&
-                upgrade.priceNextLevel <= heroInfo.money &&
-                !upgrade.isMaxLevel
-            );
+            return upgrade.isCanUpgraged && !upgrade.isMaxLevel;
         })
         .reduce(
             (best, upgrade) =>
@@ -45,6 +38,22 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             Logger.color(account.clientName, Color.Cyan),
             Logger.color(' | ', Color.Gray),
             `Нет доступных улучшений`
+        );
+        setCooldown('noUpgradesUntil', account, 600);
+        return;
+    }
+
+    if (bestUpgrade.priceNextLevel > heroInfo.money) {
+        log.info(
+            Logger.color(account.clientName, Color.Cyan),
+            Logger.color(' | ', Color.Gray),
+            `Недостаточно денег для улучшения`,
+            Logger.color(bestUpgrade.id, Color.Yellow),
+            'Не хватает:',
+            Logger.color(
+                formatNumber(bestUpgrade.priceNextLevel - heroInfo.money),
+                Color.Magenta
+            )
         );
         setCooldown('noUpgradesUntil', account, 600);
         return;
@@ -77,7 +86,16 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             formatNumber(bestUpgrade!.profitIncrement + heroInfo.moneyPerHour),
             Color.Magenta
         ),
-        Logger.color(`(+${bestUpgrade!.profitIncrement})\n`, Color.Green),
+        Logger.color(`(+${bestUpgrade!.profitIncrement})`, Color.Green),
+        'Окупаемость:',
+        Logger.color(
+            formatNumber(
+                bestUpgrade!.priceNextLevel / bestUpgrade!.profitIncrement
+            ),
+            Color.Magenta
+        ),
+        Logger.color(`часов`, Color.Green),
+        `\n`,
         Logger.color(`Осталось денег:`, Color.Green),
         Logger.color(formatNumber(heroInfo.money), Color.Magenta)
     );
