@@ -1,7 +1,10 @@
+export type MuskEmpireResponse<T> = {
+    data: T;
+    success: boolean;
+};
+
 export type LoadDbResponse = {
-    data: {
-        dbSkills: Array<DbSkill>;
-    };
+    dbSkills: Array<DbSkill>;
 };
 
 export type DbSkill = {
@@ -33,16 +36,14 @@ export type SkillRequirement = {
     desc: string;
 };
 
-export type SkillsResponse = {
-    data: Record<
-        string,
-        {
-            level: number;
-            lastUpgradeDate: string;
-            finishUpgradeDate: string | null;
-        }
-    >;
-};
+export type SkillsResponse = Record<
+    string,
+    {
+        level: number;
+        lastUpgradeDate: string;
+        finishUpgradeDate: string | null;
+    }
+>;
 
 export type Hero = {
     id: number;
@@ -77,10 +78,6 @@ export type Hero = {
     userId: number;
     offlineBonus?: number;
 };
-
-export type HeroInfoResponse = {
-    data: Hero;
-};
 export type Fight = {
     id: string;
     league: string;
@@ -101,12 +98,10 @@ export type Fight = {
 };
 
 export type FightResponse = {
-    data: {
-        fight: Fight;
-        hero: Hero;
-        opponent?: {
-            name: string;
-        };
+    fight: Fight;
+    hero: Hero;
+    opponent?: {
+        name: string;
     };
 };
 //{
@@ -129,20 +124,18 @@ export type FightResponse = {
 //     }
 // }
 export type ProfileInfoResponse = {
-    data: {
-        id: number;
-        avatar: string;
-        firstName: string;
-        lastName: string;
-        userName: string;
-        isPremium: boolean;
-        friends: number;
-        refCode: string;
-        registrationDate: string;
-        photoUrl: string;
-        isCanConnectFriend: boolean;
-        isBetaTester: boolean;
-        walletBalance: number;
-        notcoinTier: number;
-    };
+    id: number;
+    avatar: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    isPremium: boolean;
+    friends: number;
+    refCode: string;
+    registrationDate: string;
+    photoUrl: string;
+    isCanConnectFriend: boolean;
+    isBetaTester: boolean;
+    walletBalance: number;
+    notcoinTier: number;
 };

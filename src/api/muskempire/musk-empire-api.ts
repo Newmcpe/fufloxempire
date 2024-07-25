@@ -2,8 +2,9 @@ import axios, { AxiosResponse } from 'axios';
 import { Proxy } from 'util/config-schema.js';
 import {
     FightResponse,
-    HeroInfoResponse,
+    Hero,
     LoadDbResponse,
+    MuskEmpireResponse,
     ProfileInfoResponse,
     SkillsResponse,
 } from './model.js';
@@ -24,14 +25,18 @@ const authByTelegramWebApp = async (
     proxy: Proxy | null
 ): Promise<AxiosResponse> => axios.post(`${BASE_DOMAIN}/telegram/auth`, body);
 
-const loadDb = async (token: string): Promise<AxiosResponse<LoadDbResponse>> =>
+const loadDb = async (
+    token: string
+): Promise<AxiosResponse<MuskEmpireResponse<LoadDbResponse>>> =>
     axios.get(`${BASE_DOMAIN}/dbs`, {
         headers: {
             'Api-Key': token,
         },
     });
 
-const skills = async (token: string): Promise<AxiosResponse<SkillsResponse>> =>
+const skills = async (
+    token: string
+): Promise<AxiosResponse<MuskEmpireResponse<SkillsResponse>>> =>
     axios.get(`${BASE_DOMAIN}/skills`, {
         headers: {
             'Api-Key': token,
@@ -40,7 +45,7 @@ const skills = async (token: string): Promise<AxiosResponse<SkillsResponse>> =>
 
 const getHeroInfo = async (
     token: string
-): Promise<AxiosResponse<HeroInfoResponse>> =>
+): Promise<AxiosResponse<MuskEmpireResponse<Hero>>> =>
     axios.get(`${BASE_DOMAIN}/hero/info`, {
         headers: {
             'Api-Key': token,
@@ -88,7 +93,7 @@ const fightPvp = async (
     token: string,
     league: string,
     strategy: string
-): Promise<AxiosResponse<FightResponse>> =>
+): Promise<AxiosResponse<MuskEmpireResponse<FightResponse>>> =>
     axios.post(
         `${BASE_DOMAIN}/pvp/fight`,
         {
@@ -106,12 +111,38 @@ const fightPvp = async (
 
 const getProfileInfo = async (
     token: string
-): Promise<AxiosResponse<ProfileInfoResponse>> =>
+): Promise<AxiosResponse<MuskEmpireResponse<ProfileInfoResponse>>> =>
     axios.get(`${BASE_DOMAIN}/profile/info`, {
         headers: {
             'Api-Key': token,
         },
     });
+
+const tap = async (
+    token: string,
+    amount: number,
+    currentEnergy: number
+): Promise<AxiosResponse<MuskEmpireResponse<never>>> =>
+    axios.post(
+        `${BASE_DOMAIN}/hero/action/tap`,
+        {
+            data: {
+                data: {
+                    amount,
+                    currentEnergy,
+                },
+                seconds: 1 + Math.floor(Math.random() * 20),
+            },
+        },
+        {
+            headers: {
+                'Api-Key': token,
+            },
+            validateStatus: function (status) {
+                return status < 500;
+            },
+        }
+    );
 
 export {
     loadDb,
@@ -123,4 +154,5 @@ export {
     fightPvp,
     claimPvp,
     getProfileInfo,
+    tap,
 };

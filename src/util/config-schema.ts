@@ -23,22 +23,24 @@ export type Cooldowns = {
     noUpgradesUntil: number;
     noOfflineBonusUntil: number;
     noPvpUntil: number;
+    noTapsUntil: number;
 };
 
 export const defaultConfig: Config = {
     accounts: {},
 };
 
-export const defaultMuskEmpireAccount = {
+export const defaultMuskEmpireAccount: MuskEmpireAccount = {
     clientName: '',
     currentCooldowns: {
         noUpgradesUntil: 0,
         noOfflineBonusUntil: 0,
         noPvpUntil: 0,
+        noTapsUntil: 0,
     },
     preferences: {
         minimalBalance: 1000,
         minimalFightBalance: 25000,
     },
-    modules: ['upgrader', 'offline-bonus-claimer', 'combater'],
+    modules: ['upgrader', 'offline-bonus-claimer', 'combater', 'tapper'],
 };

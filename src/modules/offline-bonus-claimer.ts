@@ -5,6 +5,7 @@ import {
     getHeroInfo,
 } from '../api/muskempire/musk-empire-api.js';
 import { isCooldownOver, setCooldown } from './heartbeat.js';
+import { formatNumber } from '../util/number.js';
 
 const log = Logger.create('[Offline Bonus Claimer]');
 
@@ -23,8 +24,11 @@ export const offlineBonusClaimer = async (
         log.info(
             Logger.color(account.clientName, Color.Cyan),
             Logger.color(' | ', Color.Gray),
-            `Успешно собрано оффлайн бонусов`,
-            Logger.color(`(+${heroInfo.offlineBonus} 🪙)`, Color.Green)
+            `Собран оффлайн доход`,
+            Logger.color(
+                `+${formatNumber(heroInfo.offlineBonus!)} 🪙`,
+                Color.Green
+            )
         );
     }
 

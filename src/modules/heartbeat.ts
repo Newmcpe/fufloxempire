@@ -2,11 +2,11 @@ import { storage } from '../index.js';
 import { MuskEmpireAccount } from '../util/config-schema.js';
 import { dateNowInSeconds } from '../util/date.js';
 import { Color, Logger } from '@starkow/logger';
-import { createTelegramClient, getMuskEmpireApiKey } from '../onboarding.js';
-import { authByTelegramWebApp } from '../api/muskempire/musk-empire-api.js';
+import { getMuskEmpireApiKey } from '../onboarding.js';
 import { upgrader } from './upgrader.js';
 import { offlineBonusClaimer } from './offline-bonus-claimer.js';
 import { combater } from './combater.js';
+import { tapper } from './tapper.js';
 
 const log = Logger.create('[HEARTBEAT]');
 
@@ -14,6 +14,7 @@ const modules = {
     upgrader: upgrader,
     'offline-bonus-claimer': offlineBonusClaimer,
     combater: combater,
+    tapper: tapper,
 };
 
 export async function startHeartbeat() {

@@ -6,6 +6,7 @@ import {
     getHeroInfo,
 } from '../api/muskempire/musk-empire-api.js';
 import { isCooldownOver, setCooldown } from './heartbeat.js';
+import { formatNumber } from '../util/number.js';
 
 const log = Logger.create('[Combater]');
 
@@ -78,7 +79,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     log.info(
         Logger.color(account.clientName, Color.Cyan),
         Logger.color('|', Color.Gray),
-        `Успешно проведена атака на`,
+        `Проведена атака на`,
         Logger.color(opponent.name, Color.Magenta),
         `|`,
         `Стратегия врага:`,
@@ -89,8 +90,8 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         `|`,
         'Доход:',
         income > 0
-            ? Logger.color(`+${income} 🪙`, Color.Green)
-            : Logger.color(`${income} 🪙`, Color.Red),
+            ? Logger.color(`+${formatNumber(income)} 🪙`, Color.Green)
+            : Logger.color(`${formatNumber(income)} 🪙`, Color.Red),
         `|`,
         'Результат:',
         result

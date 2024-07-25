@@ -8,7 +8,7 @@ Bot for automatically leveling up an account in Musk Empire
 
 | Модуль                                                                   | Статус |
 |--------------------------------------------------------------------------|:------:|
-| Auto-clicker                                                             |   ⌛    |
+| Auto-clicker                                                             |   ✅    |
 | Purchase of the most cost-effective upgrades	                            |   ✅    |
 | Automatic collection of offline income (no need to log in every 3 hours) |   ✅    |
 | Automatic battles in PvP mode                                            |   ✅    |
