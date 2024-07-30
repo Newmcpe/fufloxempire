@@ -139,7 +139,8 @@ const getProfileInfo = async (
 const tap = async (
     token: string,
     amount: number,
-    currentEnergy: number
+    currentEnergy: number,
+    seconds: number
 ): Promise<AxiosResponse<MuskEmpireResponse<never>>> =>
     axiosClient.post(
         `hero/action/tap`,
@@ -149,7 +150,7 @@ const tap = async (
                     amount,
                     currentEnergy,
                 },
-                seconds: 1 + Math.floor(Math.random() * 20),
+                seconds: seconds,
             },
         },
         {

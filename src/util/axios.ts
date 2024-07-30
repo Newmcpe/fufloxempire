@@ -15,7 +15,7 @@ const axiosClient = axios.create({
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-site',
-        'User-Agent': new UserAgent().random().toString(),
+        'User-Agent': new UserAgent({ deviceCategory: 'mobile' }).toString(),
         'Sec-Ch-Ua':
             '"Not/A)Brand";v="8", "Chromium";v="126", "Android WebView";v="126"',
         'Sec-Ch-Ua-Mobile': '?1',

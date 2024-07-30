@@ -2,7 +2,8 @@ import { MuskEmpireAccount } from '../util/config-schema.js';
 import { getHeroInfo, tap } from '../api/muskempire/musk-empire-api.js';
 import { isCooldownOver, setCooldown } from './heartbeat.js';
 import { Color, Logger } from '@starkow/logger';
-import { formatNumber } from '../util/number.js';
+import { formatNumber } from '../util/math.js';
+import random from 'random';
 
 const log = Logger.create('[Tapper]');
 
@@ -13,22 +14,34 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
         data: { data: heroInfo },
     } = await getHeroInfo(apiKey);
 
-    const energy = heroInfo.earns.sell.energy;
+    let energy = heroInfo.earns.task.energy;
 
-    const taps = Math.floor(Math.random() * (energy - 500)) + 500;
+    const tapsPerSeconds = random.int(20, 30);
+    const seconds = random.int(4, 6);
 
-    if (taps > 0) {
+    const earnedMoney =
+        heroInfo.earns.task.moneyPerTap * tapsPerSeconds * seconds;
+    const energySpent = Math.ceil(earnedMoney / 2);
+
+    energy -= energySpent;
+
+    if (energy > 0) {
+        await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+
         const {
             data: { success },
             status,
-        } = await tap(apiKey, taps, energy);
+        } = await tap(apiKey, earnedMoney, energy, seconds);
 
         if (success && status === 200) {
             log.info(
                 Logger.color(account.clientName, Color.Cyan),
                 Logger.color(' | ', Color.Gray),
                 `Натапал на`,
-                Logger.color(`+${formatNumber(taps)} 🪙`, Color.Green)
+                Logger.color(`+${formatNumber(earnedMoney)} 🪙`, Color.Green),
+                Logger.color(' | ', Color.Gray),
+                `Осталось энергии:`,
+                Logger.color(String(energy), Color.Yellow)
             );
 
             setCooldown(

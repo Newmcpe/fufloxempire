@@ -141,8 +141,6 @@ export async function authKeyAuthPrompt(clientName: string) {
         message: 'Введите Auth Key (HEX)',
     });
 
-    const proxy = await proxyPrompt();
-
     await authKeyAuth(clientName, authKeyResponse.authKey, '2', true);
 }
 
@@ -183,6 +181,7 @@ export async function authKeyAuth(
 export async function getMuskEmpireApiKey(clientName: string) {
     const tg = createTelegramClient(clientName);
     await tg.start();
+
     const muskEmpirePeer = await tg.resolvePeer('muskempire_bot');
     const muskEmpireUser = toInputUser(muskEmpirePeer);
 
@@ -198,8 +197,6 @@ export async function getMuskEmpireApiKey(clientName: string) {
     let initDataRaw = result.url
         .split('tgWebAppData=')[1]
         .split('&tgWebAppVersion')[0];
-
-    console.log(result.url);
 
     initDataRaw = decodeURIComponent(initDataRaw);
 

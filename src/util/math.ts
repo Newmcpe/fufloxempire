@@ -50,20 +50,6 @@ const fnQuadratic = (e: number, t: number) => {
     return t * e * e;
 };
 
-//  fnPayback(e, t) {
-//         let s = [0];
-//
-//         for (let c = 1; c <= e; c++) {
-//           const i = s[c - 1],
-//             n = this.getPrice(t, c),
-//             S = t.profitBasic + t.profitFormulaK * (c - 1),
-//             L = this.smartRound(i + n / S);
-//
-//           s.push(L);
-//         }
-//
-//         return s[e];
-//       },
 const fnPayback = (e: number, t: DbSkill) => {
     let s = [0];
     for (let c = 1; c <= e; c++) {
@@ -112,3 +98,9 @@ const calcFormula = (
         smartRound(n)
     );
 };
+
+export function formatNumber(number: number) {
+    return Math.floor(number).toLocaleString(undefined, {
+        maximumFractionDigits: 0,
+    });
+}

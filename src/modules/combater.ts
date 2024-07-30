@@ -6,7 +6,7 @@ import {
     getHeroInfo,
 } from '../api/muskempire/musk-empire-api.js';
 import { isCooldownOver, setCooldown } from './heartbeat.js';
-import { formatNumber } from '../util/number.js';
+import { formatNumber } from '../util/math.js';
 
 const log = Logger.create('[Combater]');
 

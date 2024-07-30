@@ -29,7 +29,6 @@ storage.update((data) => {
                 ] as any;
             }
         });
-        // Update the account in storage
         data.accounts[key] = account;
     });
 });
