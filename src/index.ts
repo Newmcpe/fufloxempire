@@ -15,6 +15,7 @@ export const storage = JSONFileSyncPreset<Config>(
     (process.env.CONFIG_PATH || '') + 'config.json',
     defaultConfig
 );
+
 storage.update((data) => {
     Object.entries(data.accounts).forEach(([key, account]) => {
         Object.keys(defaultMuskEmpireAccount).forEach((defaultKey) => {
@@ -36,21 +37,6 @@ storage.update((data) => {
 if (Object.keys(storage.data.accounts).length == 0) {
     await setupNewAccount(true);
 }
-
-axios.interceptors.response.use(
-    function (response) {
-        // Any status code that lie within the range of 2xx cause this function to trigger
-        // Do something with response data
-        // console.log(response.data);
-        return response;
-    },
-    function (error) {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        // Do something with response error
-        console.error(error);
-        return Promise.resolve();
-    }
-);
 
 const menuResponse = !!process.env.ACTION
     ? { action: process.env.ACTION }

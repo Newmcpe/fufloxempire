@@ -42,5 +42,5 @@ export const defaultMuskEmpireAccount: MuskEmpireAccount = {
         minimalBalance: 1000,
         minimalFightBalance: 25000,
     },
-    modules: ['upgrader', 'offline-bonus-claimer', 'combater', 'tapper'],
+    modules: ['upgrader', 'offline-bonus-claimer', 'combater'],
 };

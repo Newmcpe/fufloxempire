@@ -14,6 +14,7 @@ let loseStreak = 0;
 const strategies = ['flexible', 'aggressive', 'protective'];
 
 let strategy = strategies[1];
+let league = 'silver';
 
 let wins = 0;
 let losses = 0;
@@ -33,7 +34,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         return;
     }
 
-    const { data } = await fightPvp(apiKey, 'bronze', strategy);
+    const { data } = await fightPvp(apiKey, league, strategy);
     if (!data.data) {
         console.log('No data found', data);
     }
@@ -76,6 +77,8 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     }
     await claimPvp(apiKey);
 
+    const winRate = (wins / (wins + losses)) * 100;
+
     log.info(
         Logger.color(account.clientName, Color.Cyan),
         Logger.color('|', Color.Gray),
@@ -99,10 +102,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
             : Logger.color('Поражение', Color.Red),
         `|`,
         `Процент побед:`,
-        Logger.color(
-            ((wins / (wins + losses)) * 100).toFixed(2) + '%',
-            Color.Yellow
-        )
+        Logger.color(winRate.toFixed(2) + '%', Color.Yellow)
     );
 };
 function getRandomValue<T>(arr: T[]): T {

@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import { Proxy } from 'util/config-schema.js';
 import {
     FightResponse,
@@ -8,56 +7,71 @@ import {
     ProfileInfoResponse,
     SkillsResponse,
 } from './model.js';
-
-const BASE_DOMAIN = 'https://api.muskempire.io';
+import { axiosClient } from '../../util/axios.js';
+import { AxiosResponse } from 'axios';
 
 const authByTelegramWebApp = async (
     body: {
-        //{"data":{"initData":"user=%7B%22id%22%3A277588744%2C%22first_name%22%3A%22%D0%90%D0%BB%D0%B8%D0%BD%D0%B0%22%2C%22last_name%22%3A%22%F0%9F%8F%B3%EF%B8%8F%E2%80%8D%E2%9A%A7%EF%B8%8F%22%2C%22username%22%3A%22Newmcpe%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%7D&chat_instance=-8493099482055851733&chat_type=sender&auth_date=1721560449&hash=786a242acce68b986cbe85e07766086b06ef3f385a3d1a86129471b1ac1584d9","platform":"android","chatId":"","chatType":"sender","chatInstance":"-8493099482055851733"}}
         data: {
             initData: string;
             platform: string;
             chatId: string;
-            chatType: string;
-            chatInstance: string;
+            chatType?: string;
+            chatInstance?: string;
         };
     },
     proxy: Proxy | null
-): Promise<AxiosResponse> => axios.post(`${BASE_DOMAIN}/telegram/auth`, body);
+): Promise<AxiosResponse> => axiosClient.post(`telegram/auth`, body);
 
 const loadDb = async (
     token: string
 ): Promise<AxiosResponse<MuskEmpireResponse<LoadDbResponse>>> =>
-    axios.get(`${BASE_DOMAIN}/dbs`, {
-        headers: {
-            'Api-Key': token,
+    axiosClient.post(
+        `dbs`,
+        {
+            data: {
+                dbs: ['all'],
+            },
         },
-    });
+        {
+            headers: {
+                'Api-Key': token,
+            },
+        }
+    );
 
 const skills = async (
     token: string
 ): Promise<AxiosResponse<MuskEmpireResponse<SkillsResponse>>> =>
-    axios.get(`${BASE_DOMAIN}/skills`, {
-        headers: {
-            'Api-Key': token,
-        },
-    });
+    axiosClient.post(
+        `skills`,
+        {},
+        {
+            headers: {
+                'Api-Key': token,
+            },
+        }
+    );
 
 const getHeroInfo = async (
     token: string
 ): Promise<AxiosResponse<MuskEmpireResponse<Hero>>> =>
-    axios.get(`${BASE_DOMAIN}/hero/info`, {
-        headers: {
-            'Api-Key': token,
-        },
-    });
+    axiosClient.post(
+        `hero/info`,
+        {},
+        {
+            headers: {
+                'Api-Key': token,
+            },
+        }
+    );
 ///skills/improve
 const improveSkill = async (
     token: string,
     skillId: string
 ): Promise<AxiosResponse> =>
-    axios.post(
-        `${BASE_DOMAIN}/skills/improve`,
+    axiosClient.post(
+        `skills/improve`,
         {
             data: skillId,
         },
@@ -69,8 +83,8 @@ const improveSkill = async (
     );
 
 const claimOfflineBonus = async (token: string): Promise<AxiosResponse> =>
-    axios.post(
-        `${BASE_DOMAIN}/hero/bonus/offline/claim`,
+    axiosClient.post(
+        `hero/bonus/offline/claim`,
         {},
         {
             headers: {
@@ -79,8 +93,8 @@ const claimOfflineBonus = async (token: string): Promise<AxiosResponse> =>
         }
     );
 const claimPvp = async (token: string): Promise<AxiosResponse> =>
-    axios.post(
-        `${BASE_DOMAIN}/pvp/claim`,
+    axiosClient.post(
+        `pvp/claim`,
         {},
         {
             headers: {
@@ -94,8 +108,8 @@ const fightPvp = async (
     league: string,
     strategy: string
 ): Promise<AxiosResponse<MuskEmpireResponse<FightResponse>>> =>
-    axios.post(
-        `${BASE_DOMAIN}/pvp/fight`,
+    axiosClient.post(
+        `pvp/fight`,
         {
             data: {
                 league,
@@ -112,19 +126,23 @@ const fightPvp = async (
 const getProfileInfo = async (
     token: string
 ): Promise<AxiosResponse<MuskEmpireResponse<ProfileInfoResponse>>> =>
-    axios.get(`${BASE_DOMAIN}/profile/info`, {
-        headers: {
-            'Api-Key': token,
-        },
-    });
+    axiosClient.post(
+        `profile/info`,
+        {},
+        {
+            headers: {
+                'Api-Key': token,
+            },
+        }
+    );
 
 const tap = async (
     token: string,
     amount: number,
     currentEnergy: number
 ): Promise<AxiosResponse<MuskEmpireResponse<never>>> =>
-    axios.post(
-        `${BASE_DOMAIN}/hero/action/tap`,
+    axiosClient.post(
+        `hero/action/tap`,
         {
             data: {
                 data: {

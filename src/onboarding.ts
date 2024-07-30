@@ -187,13 +187,11 @@ export async function getMuskEmpireApiKey(clientName: string) {
     const muskEmpireUser = toInputUser(muskEmpirePeer);
 
     const result = await tg.call({
-        _: 'messages.requestAppWebView',
+        _: 'messages.requestWebView',
         peer: muskEmpirePeer,
-        app: {
-            _: 'inputBotAppShortName',
-            botId: muskEmpireUser,
-            shortName: 'game',
-        },
+        bot: muskEmpireUser,
+        fromBotMenu: false,
+        url: 'https://game.muskempire.io/',
         platform: 'android',
     });
 
@@ -211,8 +209,6 @@ export async function getMuskEmpireApiKey(clientName: string) {
                 initData: initDataRaw,
                 platform: 'android',
                 chatId: '',
-                chatType: 'sender',
-                chatInstance: '-8493099482055851733',
             },
         },
         null
