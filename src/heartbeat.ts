@@ -7,7 +7,6 @@ import { upgrader } from './modules/upgrader.js';
 import { offlineBonusClaimer } from './modules/offline-bonus-claimer.js';
 import { combater } from './modules/combater.js';
 import { tapper } from './modules/tapper.js';
-import { getUserAllData } from './api/muskempire/musk-empire-api.js';
 
 const log = Logger.create('[HEARTBEAT]');
 
