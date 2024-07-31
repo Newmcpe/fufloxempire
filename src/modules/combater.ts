@@ -125,7 +125,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         Logger.color(winRate.toFixed(2) + '%', Color.Yellow)
     );
 
-    setCooldown('noPvpUntil', account, 5);
+    setCooldown('noPvpUntil', account, 10);
 };
 
 const findLeague = (
