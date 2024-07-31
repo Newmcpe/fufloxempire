@@ -222,6 +222,9 @@ export function createTelegramClient(clientName: string) {
     let opts: BaseTelegramClientOptions = {
         apiId: API_ID,
         apiHash: API_HASH,
+        initConnectionOptions: {
+            deviceModel: 'Fuflo Musk Empire Bot',
+        },
         logLevel: 0,
         storage: `bot-data/${clientName}`,
     };
