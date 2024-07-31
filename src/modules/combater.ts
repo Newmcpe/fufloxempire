@@ -1,3 +1,8 @@
+function getRandomValue<T>(arr: T[]): T {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    return arr[randomIndex];
+}
+
 import { MuskEmpireAccount } from '../util/config-schema.js';
 import { Color, Logger } from '@starkow/logger';
 import {
@@ -104,8 +109,6 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         `Процент побед:`,
         Logger.color(winRate.toFixed(2) + '%', Color.Yellow)
     );
+
+    setCooldown('noPvpUntil', account, 5);
 };
-function getRandomValue<T>(arr: T[]): T {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    return arr[randomIndex];
-}
