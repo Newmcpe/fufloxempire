@@ -105,16 +105,15 @@ export const getUpgrades = async (token: string): Promise<Upgrade[]> => {
 
 function checkCooldown(dbSkill: DbSkill, skillLevels: SkillsResponse) {
     const skillInfo = skillLevels[dbSkill.key];
-    if (!skillInfo.finishUpgradeDate || !skillInfo.lastUpgradeDate) {
+    if (!skillInfo.finishUpgradeDate) {
         return true;
     }
 
     const finishUpgradeDate = new Date(skillInfo.finishUpgradeDate);
-    const lastUpgradeDate = new Date(skillInfo.lastUpgradeDate);
 
     const now = new Date();
 
-    return now > finishUpgradeDate || now > lastUpgradeDate;
+    return now > finishUpgradeDate;
 }
 
 function arrayByKey<T extends Record<string, any>>(
