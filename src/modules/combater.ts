@@ -1,3 +1,7 @@
+function getRandomValue<T>(arr: T[]): T {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    return arr[randomIndex];
+}
 import { MuskEmpireAccount } from '../util/config-schema.js';
 import { Color, Logger } from '@starkow/logger';
 import {
@@ -19,6 +23,8 @@ let league = 'silver';
 let wins = 0;
 let losses = 0;
 let income = 0;
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     if (!isCooldownOver('noPvpUntil', account)) return;
@@ -104,8 +110,6 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         `Процент побед:`,
         Logger.color(winRate.toFixed(2) + '%', Color.Yellow)
     );
+
+    await delay(3000);
 };
-function getRandomValue<T>(arr: T[]): T {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    return arr[randomIndex];
-}
