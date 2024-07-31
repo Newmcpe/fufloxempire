@@ -15,7 +15,13 @@ export type MuskEmpireAccount = {
     modules: string[];
     preferences: {
         minimalBalance: number;
-        minimalFightBalance: number;
+        pvpMinimalBalance: {
+            bronze: number;
+            silver: number;
+            gold: number;
+            platina: number;
+            diamond: number;
+        };
     };
 };
 
@@ -40,7 +46,24 @@ export const defaultMuskEmpireAccount: MuskEmpireAccount = {
     },
     preferences: {
         minimalBalance: 1000,
-        minimalFightBalance: 25000,
+        pvpMinimalBalance: {
+            bronze: 50000,
+            silver: 500000,
+            gold: 5000000,
+            platina: 50000000,
+            diamond: 500000000,
+        },
     },
     modules: ['upgrader', 'offline-bonus-claimer', 'combater'],
 };
+
+export function mergeDeep(target: any, source: any) {
+    for (const key of Object.keys(source)) {
+        if (source[key] instanceof Object && key in target) {
+            target[key] = mergeDeep(target[key], source[key]);
+        } else if (!(key in target)) {
+            target[key] = source[key];
+        }
+    }
+    return target;
+}

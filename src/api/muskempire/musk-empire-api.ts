@@ -123,6 +123,18 @@ const fightPvp = async (
         }
     );
 
+//pvp/info
+const getUserAllData = async (token: string): Promise<AxiosResponse<Object>> =>
+    axiosClient.post(
+        `user/data/all`,
+        {},
+        {
+            headers: {
+                'Api-Key': token,
+            },
+        }
+    );
+
 const getProfileInfo = async (
     token: string
 ): Promise<AxiosResponse<MuskEmpireResponse<ProfileInfoResponse>>> =>
@@ -174,4 +186,5 @@ export {
     claimPvp,
     getProfileInfo,
     tap,
+    getUserAllData,
 };

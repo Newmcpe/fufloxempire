@@ -5,6 +5,20 @@ export type MuskEmpireResponse<T> = {
 
 export type LoadDbResponse = {
     dbSkills: Array<DbSkill>;
+    dbNegotiationsLeague: Array<DbNegotationLeague>;
+};
+
+export type DbNegotationLeague = {
+    key: string;
+    title: string;
+    minContract: number;
+    maxContract: number;
+    img: string | null;
+    dependenciesSkills: string[];
+    requiredLevel: number;
+    maxLevel: number;
+    color: string;
+    bgColor: string;
 };
 
 export type DbSkill = {

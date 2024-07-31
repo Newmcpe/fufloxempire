@@ -5,6 +5,7 @@ import {
     Config,
     defaultConfig,
     defaultMuskEmpireAccount,
+    mergeDeep,
     MuskEmpireAccount,
 } from './util/config-schema.js';
 import { startHeartbeat } from 'modules/heartbeat.js';
@@ -18,18 +19,7 @@ export const storage = JSONFileSyncPreset<Config>(
 
 storage.update((data) => {
     Object.entries(data.accounts).forEach(([key, account]) => {
-        Object.keys(defaultMuskEmpireAccount).forEach((defaultKey) => {
-            const keyOfAccount = defaultKey as keyof MuskEmpireAccount;
-
-            // Check if the current key is undefined in the account
-            if (account[keyOfAccount] === undefined) {
-                // If undefined, assign the value from defaultMuskEmpireAccounts
-                account[keyOfAccount] = defaultMuskEmpireAccount[
-                    keyOfAccount
-                ] as any;
-            }
-        });
-        data.accounts[key] = account;
+        data.accounts[key] = mergeDeep(account, defaultMuskEmpireAccount);
     });
 });
 

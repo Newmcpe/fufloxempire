@@ -4,9 +4,11 @@ import {
     claimPvp,
     fightPvp,
     getHeroInfo,
+    loadDb,
 } from '../api/muskempire/musk-empire-api.js';
 import { isCooldownOver, setCooldown } from './heartbeat.js';
 import { formatNumber } from '../util/math.js';
+import { DbNegotationLeague, Hero } from '../api/muskempire/model.js';
 
 const log = Logger.create('[Combater]');
 
@@ -14,7 +16,6 @@ let loseStreak = 0;
 const strategies = ['flexible', 'aggressive', 'protective'];
 
 let strategy = strategies[1];
-let league = 'silver';
 
 let wins = 0;
 let losses = 0;
@@ -24,12 +25,23 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     if (!isCooldownOver('noPvpUntil', account)) return;
 
     const {
-        data: {
-            data: { money },
-        },
+        data: { data: heroInfo },
     } = await getHeroInfo(apiKey);
 
-    if (money < account.preferences.minimalFightBalance) {
+    if (heroInfo.money < account.preferences.minimalBalance) {
+        setCooldown('noPvpUntil', account, 30);
+        return;
+    }
+
+    const {
+        data: {
+            data: { dbNegotiationsLeague },
+        },
+    } = await loadDb(apiKey);
+
+    const league = findLeague(account, heroInfo, dbNegotiationsLeague);
+
+    if (!league) {
         setCooldown('noPvpUntil', account, 30);
         return;
     }
@@ -85,6 +97,9 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         `Проведена атака на`,
         Logger.color(opponent.name, Color.Magenta),
         `|`,
+        `Лига:`,
+        Logger.color(league, Color.Yellow),
+        `|`,
         `Стратегия врага:`,
         Logger.color(fight.player1Strategy, Color.Yellow),
         `|`,
@@ -105,6 +120,30 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         Logger.color(winRate.toFixed(2) + '%', Color.Yellow)
     );
 };
+
+const findLeague = (
+    account: MuskEmpireAccount,
+    heroInfo: Hero,
+    dbNegotiationsLeagues: DbNegotationLeague[]
+) => {
+    const league = dbNegotiationsLeagues.find(
+        (league) =>
+            heroInfo.level >= league.requiredLevel &&
+            heroInfo.level <= league.maxLevel &&
+            heroInfo.money >=
+                account.preferences.pvpMinimalBalance[
+                    league.key as keyof typeof account.preferences.pvpMinimalBalance
+                ]
+    );
+
+    if (!league) {
+        log.error('League not found');
+        return null;
+    }
+
+    return league.key;
+};
+
 function getRandomValue<T>(arr: T[]): T {
     const randomIndex = Math.floor(Math.random() * arr.length);
     return arr[randomIndex];
