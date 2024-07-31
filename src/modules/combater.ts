@@ -3,7 +3,7 @@ function getRandomValue<T>(arr: T[]): T {
     return arr[randomIndex];
 }
 
-import { MuskEmpireAccount } from '../util/config-schema.js';
+import { MuskEmpireAccount } from '../util/config.js';
 import { Color, Logger } from '@starkow/logger';
 import {
     claimPvp,
@@ -11,7 +11,7 @@ import {
     getHeroInfo,
     loadDb,
 } from '../api/muskempire/musk-empire-api.js';
-import { isCooldownOver, setCooldown } from './heartbeat.js';
+import { isCooldownOver, setCooldown } from '../heartbeat.js';
 import { formatNumber } from '../util/math.js';
 import { DbNegotationLeague, Hero } from '../api/muskempire/model.js';
 

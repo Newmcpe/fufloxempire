@@ -3,7 +3,7 @@ import { BaseTelegramClientOptions, TelegramClient } from '@mtcute/node';
 import { API_HASH, API_ID } from './env.js';
 import { v4 as uuidv4 } from 'uuid';
 import { DC_MAPPING_PROD } from '@mtcute/convert';
-import { defaultMuskEmpireAccount, Proxy } from './util/config-schema.js';
+import { defaultMuskEmpireAccount, Proxy } from './util/config.js';
 import { toInputUser } from '@mtcute/node/utils.js';
 import { storage } from './index.js';
 import { authByTelegramWebApp } from './api/muskempire/musk-empire-api.js';

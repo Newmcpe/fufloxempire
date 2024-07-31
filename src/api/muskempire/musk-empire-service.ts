@@ -104,7 +104,6 @@ export const getUpgrades = async (token: string): Promise<Upgrade[]> => {
 };
 
 function checkCooldown(dbSkill: DbSkill, skillLevels: SkillsResponse) {
-    // if (!t.finishUpgradeDate || !t.lastUpgradeDate) return;
     const skillInfo = skillLevels[dbSkill.key];
     if (!skillInfo.finishUpgradeDate || !skillInfo.lastUpgradeDate) {
         return true;

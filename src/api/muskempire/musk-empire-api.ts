@@ -1,4 +1,4 @@
-import { Proxy } from 'util/config-schema.js';
+import { Proxy } from '../../util/config.js';
 import {
     FightResponse,
     Hero,
@@ -7,7 +7,7 @@ import {
     ProfileInfoResponse,
     SkillsResponse,
 } from './model.js';
-import { axiosClient } from '../../util/axios.js';
+import { axiosClient } from '../../util/axios-client.js';
 import { AxiosResponse } from 'axios';
 
 const authByTelegramWebApp = async (

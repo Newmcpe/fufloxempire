@@ -1,13 +1,13 @@
-import { storage } from '../index.js';
-import { MuskEmpireAccount } from '../util/config-schema.js';
-import { dateNowInSeconds } from '../util/date.js';
+import { storage } from './index.js';
+import { MuskEmpireAccount } from './util/config.js';
+import { dateNowInSeconds } from './util/date.js';
 import { Color, Logger } from '@starkow/logger';
-import { getMuskEmpireApiKey } from '../onboarding.js';
-import { upgrader } from './upgrader.js';
-import { offlineBonusClaimer } from './offline-bonus-claimer.js';
-import { combater } from './combater.js';
-import { tapper } from './tapper.js';
-import { getUserAllData } from '../api/muskempire/musk-empire-api.js';
+import { getMuskEmpireApiKey } from './telegram-auth.js';
+import { upgrader } from './modules/upgrader.js';
+import { offlineBonusClaimer } from './modules/offline-bonus-claimer.js';
+import { combater } from './modules/combater.js';
+import { tapper } from './modules/tapper.js';
+import { getUserAllData } from './api/muskempire/musk-empire-api.js';
 
 const log = Logger.create('[HEARTBEAT]');
 

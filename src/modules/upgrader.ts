@@ -1,4 +1,4 @@
-import { MuskEmpireAccount } from '../util/config-schema.js';
+import { MuskEmpireAccount } from '../util/config.js';
 import { getUpgrades, Upgrade } from '../api/muskempire/musk-empire-service.js';
 import {
     getHeroInfo,
@@ -6,7 +6,7 @@ import {
     improveSkill,
 } from '../api/muskempire/musk-empire-api.js';
 import { Color, Logger } from '@starkow/logger';
-import { isCooldownOver, setCooldown } from './heartbeat.js';
+import { isCooldownOver, setCooldown } from '../heartbeat.js';
 import { formatNumber } from '../util/math.js';
 
 const log = Logger.create('[Upgrader]');

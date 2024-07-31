@@ -1,14 +1,14 @@
 import enquirer from 'enquirer';
 import { JSONFileSyncPreset } from 'lowdb/node';
-import { setupNewAccount } from './onboarding.js';
+import { setupNewAccount } from './telegram-auth.js';
 import {
     Config,
     defaultConfig,
     defaultMuskEmpireAccount,
     mergeDeep,
     MuskEmpireAccount,
-} from './util/config-schema.js';
-import { startHeartbeat } from 'modules/heartbeat.js';
+} from './util/config.js';
+import { startHeartbeat } from './heartbeat.js';
 import axios from 'axios';
 import * as process from 'node:process';
 

@@ -1,6 +1,6 @@
-import { MuskEmpireAccount } from '../util/config-schema.js';
+import { MuskEmpireAccount } from '../util/config.js';
 import { getHeroInfo, tap } from '../api/muskempire/musk-empire-api.js';
-import { isCooldownOver, setCooldown } from './heartbeat.js';
+import { isCooldownOver, setCooldown } from '../heartbeat.js';
 import { Color, Logger } from '@starkow/logger';
 import { formatNumber } from '../util/math.js';
 import random from 'random';
