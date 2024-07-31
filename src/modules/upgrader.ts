@@ -22,7 +22,7 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
     const bestUpgrade = upgrades
         .filter((upgrade) => {
             return (
-                upgrade.isCanUpgraged &&
+                upgrade.isCanUpgraded &&
                 !upgrade.isMaxLevel &&
                 upgrade.priceNextLevel < 80000000
             );

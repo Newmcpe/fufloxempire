@@ -5,7 +5,7 @@ import {
     skills,
 } from './musk-empire-api.js';
 import { getPrice, getProfit } from '../../util/math.js';
-import { SkillRequirement } from './model.js';
+import { DbSkill, SkillRequirement, SkillsResponse } from './model.js';
 
 export type Upgrade = {
     id: string;
@@ -15,7 +15,7 @@ export type Upgrade = {
     profitIncrement: number;
     isMaxLevel: boolean;
     isMaxLevelMore: boolean;
-    isCanUpgraged: boolean;
+    isCanUpgraded: boolean;
     isPenultimateLevel: boolean;
     profitNextLevel: number;
     priceNextLevel: number;
@@ -50,28 +50,38 @@ export const getUpgrades = async (token: string): Promise<Upgrade[]> => {
             const profitNextLevel = getProfit(dbSkill, currentLevel + 1);
             const isMaxLevel = currentLevel >= dbSkill.maxLevel;
 
-            const C = arrayByKey(dbSkill.levels, 'level');
-            const d =
-                !isMaxLevel && String(nextLevel) in C
-                    ? C[String(nextLevel)]
+            const skillRequirements = arrayByKey(dbSkill.levels, 'level');
+            const skillRequirement =
+                !isMaxLevel && String(nextLevel) in skillRequirements
+                    ? skillRequirements[String(nextLevel)]
                     : null;
 
-            let p = !0;
+            const isCooldownOver = checkCooldown(dbSkill, skillLevels);
 
-            let v = !0;
-            let b = !0;
-            let n = !0;
+            let isRequiredSkillsLevelsSufficient = !0;
+            let isCanUpgraded = !0;
+            let isLevelSufficient = !0;
+            let isFriendsSufficient = !0;
             let D: Record<any, any> = {};
 
-            d &&
-                ((b = heroInfo.level >= d.requiredHeroLevel),
-                (n = profileInfo.friends >= d.requiredFriends),
-                isEmptyObject(d?.requiredSkills) ||
-                    Object.entries(d?.requiredSkills!).forEach(([N, M]) => {
-                        (!(N in skillLevels) || M > skillLevels[N].level) &&
-                            ((p = !1), (D[N] = M));
-                    }),
-                (v = p && b && n));
+            skillRequirement &&
+                ((isLevelSufficient =
+                    heroInfo.level >= skillRequirement.requiredHeroLevel),
+                (isFriendsSufficient =
+                    profileInfo.friends >= skillRequirement.requiredFriends),
+                isEmptyObject(skillRequirement?.requiredSkills) ||
+                    Object.entries(skillRequirement?.requiredSkills!).forEach(
+                        ([N, M]) => {
+                            (!(N in skillLevels) || M > skillLevels[N].level) &&
+                                ((isRequiredSkillsLevelsSufficient = !1),
+                                (D[N] = M));
+                        }
+                    ),
+                (isCanUpgraded =
+                    isRequiredSkillsLevelsSufficient &&
+                    isLevelSufficient &&
+                    isCooldownOver &&
+                    isFriendsSufficient));
 
             return {
                 id: dbSkill.key,
@@ -83,7 +93,7 @@ export const getUpgrades = async (token: string): Promise<Upgrade[]> => {
                 levels: dbSkill.levels,
                 profitNextLevel,
                 profitCurrent,
-                isCanUpgraged: v,
+                isCanUpgraded,
                 priceNextLevel: getPrice(
                     dbSkill,
                     skillLevels[dbSkill.key].level + 1
@@ -92,6 +102,21 @@ export const getUpgrades = async (token: string): Promise<Upgrade[]> => {
             };
         });
 };
+
+function checkCooldown(dbSkill: DbSkill, skillLevels: SkillsResponse) {
+    // if (!t.finishUpgradeDate || !t.lastUpgradeDate) return;
+    const skillInfo = skillLevels[dbSkill.key];
+    if (!skillInfo.finishUpgradeDate || !skillInfo.lastUpgradeDate) {
+        return true;
+    }
+
+    const finishUpgradeDate = new Date(skillInfo.finishUpgradeDate);
+    const lastUpgradeDate = new Date(skillInfo.lastUpgradeDate);
+
+    const now = new Date();
+
+    return now > finishUpgradeDate || now > lastUpgradeDate;
+}
 
 function arrayByKey<T extends Record<string, any>>(
     arr: T[],
@@ -103,9 +128,6 @@ function arrayByKey<T extends Record<string, any>>(
     }, {});
 }
 
-// _isEmptyObject(e) {
-//             return Object.keys(e).length === 0
-//         },
 function isEmptyObject(obj: any) {
     return Object.keys(obj).length === 0;
 }

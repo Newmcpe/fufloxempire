@@ -21,13 +21,10 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
 
     const earnedMoney =
         heroInfo.earns.task.moneyPerTap * tapsPerSeconds * seconds;
-    const energySpent = Math.ceil(earnedMoney / 2);
 
-    energy -= energySpent;
+    energy -= earnedMoney;
 
     if (energy > 0) {
-        await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
-
         const {
             data: { success },
             status,
@@ -44,11 +41,7 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
                 Logger.color(String(energy), Color.Yellow)
             );
 
-            setCooldown(
-                'noTapsUntil',
-                account,
-                1 + Math.floor(Math.random() * 5)
-            );
+            setCooldown('noTapsUntil', account, random.int(5, 60));
         } else {
             log.info(
                 Logger.color(account.clientName, Color.Cyan),
