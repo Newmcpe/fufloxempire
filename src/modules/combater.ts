@@ -69,7 +69,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         losses++;
         loseStreak++;
 
-        if (loseStreak >= 6) {
+        if (loseStreak >= 5) {
             await claimPvp(apiKey);
             strategy = getRandomValue(strategies.filter((s) => s !== strategy));
 
