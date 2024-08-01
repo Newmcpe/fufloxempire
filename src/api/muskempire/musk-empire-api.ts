@@ -69,8 +69,8 @@ const getHeroInfo = async (
 const improveSkill = async (
     token: string,
     skillId: string
-): Promise<AxiosResponse> =>
-    axiosClient.post(
+): Promise<AxiosResponse> => {
+    const response = await axiosClient.post(
         `skills/improve`,
         {
             data: skillId,
@@ -81,6 +81,8 @@ const improveSkill = async (
             },
         }
     );
+    return response;
+};
 
 const claimOfflineBonus = async (token: string): Promise<AxiosResponse> =>
     axiosClient.post(
