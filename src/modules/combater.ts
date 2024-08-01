@@ -133,7 +133,10 @@ const findLeague = (
     heroInfo: Hero,
     dbNegotiationsLeagues: DbNegotationLeague[]
 ) => {
-    const league = dbNegotiationsLeagues.find(
+    const league = dbNegotiationsLeagues
+    .slice()
+    .reverse()
+    .find(
         (league) =>
             heroInfo.level >= league.requiredLevel &&
             heroInfo.level <= league.maxLevel &&
