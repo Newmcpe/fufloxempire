@@ -100,7 +100,7 @@ const calcFormula = (
 };
 
 export function formatNumber(number: number) {
-    return Math.floor(number).toLocaleString(undefined, {
-        maximumFractionDigits: 0,
+    return number.toLocaleString(undefined, {
+        maximumFractionDigits: 2,
     });
 }

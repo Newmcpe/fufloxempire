@@ -25,7 +25,7 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             return (
                 upgrade.isCanUpgraded &&
                 !upgrade.isMaxLevel &&
-                upgrade.profitIncrement * 36 < upgrade.priceNextLevel &&
+                upgrade.profitIncrement * 96 > upgrade.priceNextLevel &&
                 (!failedUpgrades[upgrade.id] ||
                     failedUpgrades[upgrade.id] < Date.now())
             );
@@ -60,7 +60,18 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             Logger.color(
                 formatNumber(bestUpgrade.priceNextLevel - heroInfo.money),
                 Color.Magenta
-            )
+            ),
+            '🪙',
+            `|`,
+            'Расчетное время до наличия денег:',
+            Logger.color(
+                formatNumber(
+                    (bestUpgrade.priceNextLevel - heroInfo.money) /
+                        heroInfo.moneyPerHour
+                ),
+                Color.Magenta
+            ),
+            `часов`
         );
         setCooldown('noUpgradesUntil', account, 600);
         return;
