@@ -25,7 +25,6 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             return (
                 upgrade.isCanUpgraded &&
                 !upgrade.isMaxLevel &&
-                upgrade.profitIncrement * 24 > upgrade.priceNextLevel &&
                 (!failedUpgrades[upgrade.id] ||
                     failedUpgrades[upgrade.id] < Date.now())
             );
