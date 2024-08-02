@@ -25,8 +25,9 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             return (
                 upgrade.isCanUpgraded &&
                 !upgrade.isMaxLevel &&
-                upgrade.priceNextLevel < 80000000 &&
-                (!failedUpgrades[upgrade.id] || failedUpgrades[upgrade.id] < Date.now())
+                upgrade.profitIncrement * 24 > upgrade.priceNextLevel &&
+                (!failedUpgrades[upgrade.id] ||
+                    failedUpgrades[upgrade.id] < Date.now())
             );
         })
         .reduce(
@@ -76,17 +77,24 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
     heroInfo.money -= bestUpgrade.priceNextLevel;
 
     const response = await improveSkill(apiKey, bestUpgrade.id);
-    if (response.data.success === false && response.data.error === 'skill requirements fail: upgrade not finished') {
+    if (
+        response.data.success === false &&
+        response.data.error === 'skill requirements fail: upgrade not finished'
+    ) {
         log.warn(
             Logger.color(account.clientName, Color.Cyan),
             Logger.color(' | ', Color.Gray),
             `Продукт`,
             Logger.color(bestUpgrade.id, Color.Yellow),
             `не улучшен. Пропущен на`,
-            Logger.color(upgradeNotFinishedWaitMinutes.toString(), Color.Magenta),
+            Logger.color(
+                upgradeNotFinishedWaitMinutes.toString(),
+                Color.Magenta
+            ),
             `минут.`
         );
-        failedUpgrades[bestUpgrade.id] = Date.now() + upgradeNotFinishedWaitMinutes * 60 * 1000;
+        failedUpgrades[bestUpgrade.id] =
+            Date.now() + upgradeNotFinishedWaitMinutes * 60 * 1000;
     } else {
         log.info(
             Logger.color(account.clientName, Color.Cyan),
@@ -96,11 +104,16 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             `с ценой`,
             Logger.color(bestUpgrade!.priceNextLevel.toString(), Color.Magenta),
             `до`,
-            Logger.color((bestUpgrade!.currentLevel + 1).toString(), Color.Magenta),
+            Logger.color(
+                (bestUpgrade!.currentLevel + 1).toString(),
+                Color.Magenta
+            ),
             `уровня |\n`,
             `Заработок каждый час:`,
             Logger.color(
-                formatNumber(bestUpgrade!.profitIncrement + heroInfo.moneyPerHour),
+                formatNumber(
+                    bestUpgrade!.profitIncrement + heroInfo.moneyPerHour
+                ),
                 Color.Magenta
             ),
             Logger.color(`(+${bestUpgrade!.profitIncrement})`, Color.Green),
