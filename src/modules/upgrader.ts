@@ -25,6 +25,7 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             return (
                 upgrade.isCanUpgraded &&
                 !upgrade.isMaxLevel &&
+                upgrade.profitIncrement * 36 < upgrade.priceNextLevel &&
                 (!failedUpgrades[upgrade.id] ||
                     failedUpgrades[upgrade.id] < Date.now())
             );
@@ -69,6 +70,21 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
         heroInfo.money - bestUpgrade.priceNextLevel <
         account.preferences.minimalBalance
     ) {
+        log.info(
+            Logger.color(account.clientName, Color.Cyan),
+            Logger.color(' | ', Color.Gray),
+            `Недостаточно денег на минимальный баланс после улучшения`,
+            Logger.color(bestUpgrade.id, Color.Yellow),
+            'Не хватает:',
+            Logger.color(
+                formatNumber(
+                    bestUpgrade.priceNextLevel -
+                        heroInfo.money +
+                        account.preferences.minimalBalance
+                ),
+                Color.Magenta
+            )
+        );
         setCooldown('noUpgradesUntil', account, 600);
         return;
     }
