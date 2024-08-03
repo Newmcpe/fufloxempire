@@ -1,8 +1,3 @@
-function getRandomValue<T>(arr: T[]): T {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    return arr[randomIndex];
-}
-
 import { MuskEmpireAccount } from '../util/config.js';
 import { Color, Logger } from '@starkow/logger';
 import {
@@ -14,20 +9,37 @@ import {
 import { isCooldownOver, setCooldown } from '../heartbeat.js';
 import { formatNumber } from '../util/math.js';
 import { DbNegotationLeague, Hero } from '../api/muskempire/model.js';
+import { storage } from '../index.js';
+
+function getRandomValue<T>(arr: T[]): T {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    return arr[randomIndex];
+}
 
 const log = Logger.create('[Combater]');
 
-let loseStreak = 0;
-const strategies = ['flexible', 'aggressive', 'protective'];
+enum Strategy {
+    aggressive = 'aggressive',
+    protective = 'protective',
+    flexible = 'flexible',
+}
 
-let strategy = strategies[1];
+let selectedStrategy = Strategy.aggressive;
 
-let wins = 0;
-let losses = 0;
-let income = 0;
+let wins: Record<string, number> = {};
+let losses: Record<string, number> = {};
+let income: Record<string, number> = {};
+let loseStreak: Record<string, number> = {};
 
 export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     if (!isCooldownOver('noPvpUntil', account)) return;
+
+    wins[account.clientName] = wins[account.clientName] || 0;
+    losses[account.clientName] = losses[account.clientName] || 0;
+    income[account.clientName] = income[account.clientName] || 0;
+    loseStreak[account.clientName] = loseStreak[account.clientName] || 0;
+
+    roundStrategy();
 
     const {
         data: { data: heroInfo },
@@ -51,7 +63,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         return;
     }
 
-    const { data } = await fightPvp(apiKey, league, strategy);
+    const { data } = await fightPvp(apiKey, league, selectedStrategy);
     if (!data.data) {
         console.log('No data found', data);
     }
@@ -64,16 +76,13 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     const result = fight.winner === hero.id;
 
     if (!result) {
-        income -= fight.moneyContract;
+        income[account.clientName] -= fight.moneyContract;
 
-        losses++;
-        loseStreak++;
+        losses[account.clientName]++;
+        loseStreak[account.clientName]++;
 
-        if (loseStreak >= 5) {
+        if (loseStreak[account.clientName] >= 5) {
             await claimPvp(apiKey);
-            strategy = getRandomValue(strategies.filter((s) => s !== strategy));
-
-            loseStreak = 0;
             log.info(
                 Logger.color(account.clientName, Color.Cyan),
                 Logger.color('|', Color.Gray),
@@ -82,19 +91,22 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
                 `Сплю 30 секунд`,
                 `|`,
                 'Выбрана стратегия:',
-                Logger.color(strategy, Color.Yellow)
+                Logger.color(selectedStrategy, Color.Yellow)
             );
             setCooldown('noPvpUntil', account, 30);
             return;
         }
     } else {
-        income += fight.moneyProfit;
-        wins++;
-        loseStreak = 0;
+        income[account.clientName] += fight.moneyProfit;
+        wins[account.clientName]++;
+        loseStreak[account.clientName] = 0;
     }
     await claimPvp(apiKey);
 
-    const winRate = (wins / (wins + losses)) * 100;
+    const winRate =
+        (wins[account.clientName] /
+            (wins[account.clientName] + losses[account.clientName])) *
+        100;
 
     log.info(
         Logger.color(account.clientName, Color.Cyan),
@@ -109,12 +121,18 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         Logger.color(fight.player1Strategy, Color.Yellow),
         `|`,
         `Стратегия героя:`,
-        Logger.color(strategy, Color.Yellow),
+        Logger.color(selectedStrategy, Color.Yellow),
         `|`,
         'Доход:',
-        income > 0
-            ? Logger.color(`+${formatNumber(income)} 🪙`, Color.Green)
-            : Logger.color(`${formatNumber(income)} 🪙`, Color.Red),
+        income[account.clientName] > 0
+            ? Logger.color(
+                  `+${formatNumber(income[account.clientName])} 🪙`,
+                  Color.Green
+              )
+            : Logger.color(
+                  `${formatNumber(income[account.clientName])} 🪙`,
+                  Color.Red
+              ),
         `|`,
         'Результат:',
         result
@@ -134,22 +152,36 @@ const findLeague = (
     dbNegotiationsLeagues: DbNegotationLeague[]
 ) => {
     const league = dbNegotiationsLeagues
-    .slice()
-    .reverse()
-    .find(
-        (league) =>
-            heroInfo.level >= league.requiredLevel &&
-            heroInfo.level <= league.maxLevel &&
-            heroInfo.money >=
-                account.preferences.pvpMinimalBalance[
-                    league.key as keyof typeof account.preferences.pvpMinimalBalance
-                ]
-    );
+        .slice()
+        .reverse()
+        .find(
+            (league) =>
+                heroInfo.level >= league.requiredLevel &&
+                heroInfo.level <= league.maxLevel &&
+                heroInfo.money >=
+                    account.preferences.pvpMinimalBalance[
+                        league.key as keyof typeof account.preferences.pvpMinimalBalance
+                    ]
+        );
 
     if (!league) {
-        log.error('League not found');
+        log.error(account.clientName, 'Не найдена подходящая лига');
         return null;
     }
 
     return league.key;
 };
+
+function roundStrategy() {
+    switch (selectedStrategy) {
+        case Strategy.aggressive:
+            selectedStrategy = Strategy.protective;
+            break;
+        case Strategy.protective:
+            selectedStrategy = Strategy.flexible;
+            break;
+        case Strategy.flexible:
+            selectedStrategy = Strategy.aggressive;
+            break;
+    }
+}

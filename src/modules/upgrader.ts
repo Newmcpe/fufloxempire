@@ -66,7 +66,9 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             'Расчетное время до наличия денег:',
             Logger.color(
                 formatNumber(
-                    (bestUpgrade.priceNextLevel - heroInfo.money) /
+                    (bestUpgrade.priceNextLevel +
+                        account.preferences.minimalBalance -
+                        heroInfo.money) /
                         heroInfo.moneyPerHour
                 ),
                 Color.Magenta
