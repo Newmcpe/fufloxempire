@@ -7,6 +7,11 @@ import { upgrader } from './modules/upgrader.js';
 import { offlineBonusClaimer } from './modules/offline-bonus-claimer.js';
 import { combater } from './modules/combater.js';
 import { tapper } from './modules/tapper.js';
+import {
+    getHeroInfo,
+    getProfileInfo,
+} from './api/muskempire/musk-empire-api.js';
+import { formatNumber } from './util/math.js';
 
 const log = Logger.create('[HEARTBEAT]');
 
@@ -20,6 +25,32 @@ const modules = {
 export async function startHeartbeat() {
     for (const account of Object.values(storage.data.accounts)) {
         const authData = await getMuskEmpireApiKey(account.clientName);
+        const {
+            data: { data: hero },
+        } = await getHeroInfo(authData.apiKey);
+        const {
+            data: { data: profile },
+        } = await getProfileInfo(authData.apiKey);
+
+        log.info(
+            Logger.color(account.clientName, Color.Cyan),
+            Logger.color('|', Color.Gray),
+            'Доход:',
+            Logger.color(
+                `${formatNumber(hero.moneyPerHour)} 🪙/ч.`,
+                Color.Magenta
+            ),
+            Logger.color('|', Color.Gray),
+            'Баланс:',
+            Logger.color(formatNumber(hero.money), Color.Magenta),
+            '🪙',
+            Logger.color('|', Color.Gray),
+            'Текущий уровень:',
+            Logger.color(hero.level.toString(), Color.Magenta),
+            Logger.color('|', Color.Gray),
+            'Количество рефералов:',
+            Logger.color(profile.friends.toString(), Color.Magenta)
+        );
 
         await accountHeartbeat(account, authData.apiKey);
     }

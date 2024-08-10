@@ -16,17 +16,20 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
 
     let energy = heroInfo.earns.task.energy;
 
-    const tapsPerSeconds = random.int(20, 30);
-    const seconds = random.int(4, 6);
+    const randomTapCountPerSecond = random.int(5, 10);
+    const seconds = random.int(2, 6);
 
-    const earnedMoney =
-        heroInfo.earns.task.moneyPerTap * tapsPerSeconds * seconds;
+    let earnedMoney =
+        heroInfo.earns.task.moneyPerTap * randomTapCountPerSecond * seconds;
 
     energy -= earnedMoney;
 
     if (energy > 0) {
         const {
-            data: { success },
+            data: {
+                success,
+                data: { hero },
+            },
             status,
         } = await tap(apiKey, earnedMoney, energy, seconds);
 
@@ -38,10 +41,14 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
                 Logger.color(`+${formatNumber(earnedMoney)} 🪙`, Color.Green),
                 Logger.color(' | ', Color.Gray),
                 `Осталось энергии:`,
-                Logger.color(String(energy), Color.Yellow)
+                Logger.color(String(energy), Color.Yellow),
+                Logger.color(' | ', Color.Gray),
+                `Баланс:`,
+                Logger.color(formatNumber(hero.money), Color.Magenta),
+                '🪙'
             );
 
-            setCooldown('noTapsUntil', account, random.int(5, 60));
+            setCooldown('noTapsUntil', account, random.int(5, 10));
         } else {
             log.info(
                 Logger.color(account.clientName, Color.Cyan),
@@ -57,6 +64,6 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
             Logger.color(' | ', Color.Gray),
             `Нет энергии для тапа`
         );
-        setCooldown('noTapsUntil', account, 200);
+        setCooldown('noTapsUntil', account, 100);
     }
 };

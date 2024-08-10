@@ -155,14 +155,22 @@ const tap = async (
     amount: number,
     currentEnergy: number,
     seconds: number
-): Promise<AxiosResponse<MuskEmpireResponse<never>>> =>
+): Promise<
+    AxiosResponse<
+        MuskEmpireResponse<{
+            hero: Hero;
+        }>
+    >
+> =>
     axiosClient.post(
         `hero/action/tap`,
         {
             data: {
                 data: {
-                    amount,
-                    currentEnergy,
+                    task: {
+                        amount: amount,
+                        currentEnergy: currentEnergy,
+                    },
                 },
                 seconds: seconds,
             },

@@ -32,5 +32,5 @@ export const offlineBonusClaimer = async (
         );
     }
 
-    setCooldown('noOfflineBonusUntil', account, 60);
+    setCooldown('noOfflineBonusUntil', account, 300);
 };

@@ -77,6 +77,8 @@ export type Hero = {
             limit: number;
             energy: number;
             recoveryPerSecond: number;
+            bonusChance: number;
+            bonusMultiplier: number;
         };
         sell: {
             moneyPerTap: number;
@@ -118,25 +120,6 @@ export type FightResponse = {
         name: string;
     };
 };
-//{
-//     "success": true,
-//     "data": {
-//         "id": 277588744,
-//         "avatar": "/src/assets/img/heroes/avatar.png",
-//         "firstName": "Алина",
-//         "lastName": "",
-//         "userName": "Newmcpe",
-//         "isPremium": true,
-//         "friends": 15,
-//         "refCode": "hero277588744",
-//         "registrationDate": "2024-07-20 19:44:44",
-//         "photoUrl": null,
-//         "isCanConnectFriend": true,
-//         "isBetaTester": false,
-//         "walletBalance": 0,
-//         "notcoinTier": 1
-//     }
-// }
 export type ProfileInfoResponse = {
     id: number;
     avatar: string;

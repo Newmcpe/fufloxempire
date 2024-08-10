@@ -39,8 +39,6 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     income[account.clientName] = income[account.clientName] || 0;
     loseStreak[account.clientName] = loseStreak[account.clientName] || 0;
 
-    roundStrategy();
-
     const {
         data: { data: heroInfo },
     } = await getHeroInfo(apiKey);
@@ -82,6 +80,7 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
         loseStreak[account.clientName]++;
 
         if (loseStreak[account.clientName] >= 5) {
+            roundStrategy();
             await claimPvp(apiKey);
             log.info(
                 Logger.color(account.clientName, Color.Cyan),

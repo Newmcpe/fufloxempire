@@ -4,14 +4,14 @@ import { dateNowInSeconds } from './date.js';
 import { Md5 } from 'ts-md5';
 
 const axiosClient = axios.create({
-    baseURL: 'https://api.muskempire.io',
+    baseURL: 'https://api.xempire.io',
     headers: {
         Accept: '*/*',
         'Accept-Language': 'ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7',
         'Content-Type': 'application/json',
         'Is-Beta-Server': 'null',
-        Origin: 'https://game.muskempire.io',
-        Referer: 'https://game.muskempire.io/',
+        Origin: 'https://game.xempire.io',
+        Referer: 'https://game.xempire.io',
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-site',
