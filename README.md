@@ -1,9 +1,9 @@
 [<img src="https://img.shields.io/badge/Telegram-%40Me-orange">](https://t.me/Newmcpe)
 [<img src="https://img.shields.io/badge/Language-English-red?style=flat">](https://github.com/Newmcpe/fuflomuskempire/blob/master/README.en.md)
 
-# fuflxempire
+# fufloxempire
 
-Бот, автоматически прокачивающий аккаунт в X Empire
+Бот, автоматически прокачивающий аккаунт в X Empire (бывш. Musk Empire)
 
 ## Модули
 

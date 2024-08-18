@@ -1,8 +1,8 @@
 [<img src="https://img.shields.io/badge/Telegram-%40Me-orange">](https://t.me/Newmcpe)
 
-# fuflomuskempire
+# fufloxempire
 
-Bot for automatically leveling up an account in Musk Empire
+Bot for automatically leveling up an account in X Empire (ex. Musk Empire)
 
 ## Modules
 

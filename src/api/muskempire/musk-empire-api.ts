@@ -1,4 +1,3 @@
-import { Proxy } from '../../util/config.js';
 import {
     FightResponse,
     Hero,
@@ -119,6 +118,7 @@ const fightPvp = async (
             headers: {
                 'Api-Key': token,
             },
+            validateStatus: (_) => true,
         }
     );
 

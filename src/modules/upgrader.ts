@@ -9,7 +9,7 @@ import { isCooldownOver, setCooldown } from '../heartbeat.js';
 import { formatNumber } from '../util/math.js';
 
 const log = Logger.create('[Upgrader]');
-const failedUpgrades: Record<string, number> = {};
+const ignoredUpgrades: Record<string, number> = {};
 const upgradeNotFinishedWaitMinutes = 10;
 
 export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
@@ -25,8 +25,8 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             return (
                 upgrade.isCanUpgraded &&
                 !upgrade.isMaxLevel &&
-                (!failedUpgrades[upgrade.id] ||
-                    failedUpgrades[upgrade.id] < Date.now())
+                (!ignoredUpgrades[upgrade.id] ||
+                    ignoredUpgrades[upgrade.id] < Date.now())
             );
         })
         .reduce(
@@ -50,14 +50,13 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
     }
 
     if (bestUpgrade.priceNextLevel > heroInfo.money) {
-        //count hours to get enough money
         const hoursToGetMoney = Math.ceil(
             (bestUpgrade.priceNextLevel - heroInfo.money) /
                 heroInfo.moneyPerHour
         );
 
-        if (hoursToGetMoney > 24) {
-            failedUpgrades[bestUpgrade.id] = Date.now() + 60 * 60 * 1000;
+        if (hoursToGetMoney > 18) {
+            ignoredUpgrades[bestUpgrade.id] = Date.now() + 60 * 60 * 1000;
             log.warn(
                 Logger.color(account.clientName, Color.Cyan),
                 Logger.color(' | ', Color.Gray),
@@ -140,7 +139,7 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             ),
             `минут.`
         );
-        failedUpgrades[bestUpgrade.id] =
+        ignoredUpgrades[bestUpgrade.id] =
             Date.now() + upgradeNotFinishedWaitMinutes * 60 * 1000;
     } else {
         log.info(
@@ -178,5 +177,5 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
         );
     }
 
-    setCooldown('noUpgradesUntil', account, 10);
+    setCooldown('noUpgradesUntil', account, 30);
 };

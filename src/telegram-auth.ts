@@ -200,16 +200,13 @@ export async function getMuskEmpireApiKey(clientName: string) {
 
     initDataRaw = decodeURIComponent(initDataRaw);
 
-    await authByTelegramWebApp(
-        {
-            data: {
-                initData: initDataRaw,
-                platform: 'android',
-                chatId: '',
-            },
+    await authByTelegramWebApp({
+        data: {
+            initData: initDataRaw,
+            platform: 'android',
+            chatId: '',
         },
-        null
-    );
+    });
 
     await tg.close();
     return {

@@ -5,7 +5,7 @@ import { Color, Logger } from '@starkow/logger';
 import { getMuskEmpireApiKey } from './telegram-auth.js';
 import { upgrader } from './modules/upgrader.js';
 import { offlineBonusClaimer } from './modules/offline-bonus-claimer.js';
-import { combater } from './modules/combater.js';
+import { negotiations } from './modules/negotiations.js';
 import { tapper } from './modules/tapper.js';
 import {
     getHeroInfo,
@@ -18,7 +18,7 @@ const log = Logger.create('[HEARTBEAT]');
 const modules = {
     upgrader: upgrader,
     'offline-bonus-claimer': offlineBonusClaimer,
-    combater: combater,
+    combater: negotiations,
     tapper: tapper,
 };
 

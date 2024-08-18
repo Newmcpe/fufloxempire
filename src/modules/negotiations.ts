@@ -9,14 +9,8 @@ import {
 import { isCooldownOver, setCooldown } from '../heartbeat.js';
 import { formatNumber } from '../util/math.js';
 import { DbNegotationLeague, Hero } from '../api/muskempire/model.js';
-import { storage } from '../index.js';
 
-function getRandomValue<T>(arr: T[]): T {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    return arr[randomIndex];
-}
-
-const log = Logger.create('[Combater]');
+const log = Logger.create('[Negotiations]');
 
 enum Strategy {
     aggressive = 'aggressive',
@@ -31,7 +25,10 @@ let losses: Record<string, number> = {};
 let income: Record<string, number> = {};
 let loseStreak: Record<string, number> = {};
 
-export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
+export const negotiations = async (
+    account: MuskEmpireAccount,
+    apiKey: string
+) => {
     if (!isCooldownOver('noPvpUntil', account)) return;
 
     wins[account.clientName] = wins[account.clientName] || 0;
@@ -62,8 +59,11 @@ export const combater = async (account: MuskEmpireAccount, apiKey: string) => {
     }
 
     const { data } = await fightPvp(apiKey, league, selectedStrategy);
-    if (!data.data) {
-        console.log('No data found', data);
+
+    if (!data.success) {
+        log.error(account.clientName, '|', 'ratelimited in negotiations');
+        setCooldown('noPvpUntil', account, 300);
+        return;
     }
 
     const muskResponse = data.data;
