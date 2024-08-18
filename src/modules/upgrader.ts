@@ -146,7 +146,10 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             `Успешно улучшено`,
             Logger.color(bestUpgrade!.id, Color.Yellow),
             `с ценой`,
-            Logger.color(bestUpgrade!.priceNextLevel.toString(), Color.Magenta),
+            Logger.color(
+                formatNumber(bestUpgrade!.priceNextLevel),
+                Color.Magenta
+            ),
             `до`,
             Logger.color(
                 (bestUpgrade!.currentLevel + 1).toString(),
