@@ -10,18 +10,15 @@ import {
 import { axiosClient } from '../../util/axios-client.js';
 import { AxiosResponse } from 'axios';
 
-const authByTelegramWebApp = async (
-    body: {
-        data: {
-            initData: string;
-            platform: string;
-            chatId: string;
-            chatType?: string;
-            chatInstance?: string;
-        };
-    },
-    proxy: Proxy | null
-): Promise<AxiosResponse> => axiosClient.post(`telegram/auth`, body);
+const authByTelegramWebApp = async (body: {
+    data: {
+        initData: string;
+        platform: string;
+        chatId: string;
+        chatType?: string;
+        chatInstance?: string;
+    };
+}): Promise<AxiosResponse> => axiosClient.post(`telegram/auth`, body);
 
 const loadDb = async (
     token: string
@@ -142,6 +139,17 @@ const getProfileInfo = async (
 ): Promise<AxiosResponse<MuskEmpireResponse<ProfileInfoResponse>>> =>
     axiosClient.post(
         `profile/info`,
+        {},
+        {
+            headers: {
+                'Api-Key': token,
+            },
+        }
+    );
+
+const claimDailyBonus = async (token: string): Promise<AxiosResponse> =>
+    axiosClient.post(
+        `quests/daily/claim`,
         {},
         {
             headers: {

@@ -26,10 +26,7 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
 
     if (energy > 0) {
         const {
-            data: {
-                success,
-                data: { hero },
-            },
+            data: { success, data: heroData },
             status,
         } = await tap(apiKey, earnedMoney, energy, seconds);
 
@@ -44,7 +41,7 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
                 Logger.color(String(energy), Color.Yellow),
                 Logger.color(' | ', Color.Gray),
                 `Баланс:`,
-                Logger.color(formatNumber(hero.money), Color.Magenta),
+                Logger.color(formatNumber(heroData.hero.money), Color.Magenta),
                 '🪙'
             );
 
@@ -53,10 +50,10 @@ export const tapper = async (account: MuskEmpireAccount, apiKey: string) => {
             log.info(
                 Logger.color(account.clientName, Color.Cyan),
                 Logger.color(' | ', Color.Gray),
-                `Ушли в рейт лимит, слипаем 30 сек`
+                `Ушли в рейт лимит, слипаем 3600 сек`
             );
 
-            setCooldown('noTapsUntil', account, 30);
+            setCooldown('noTapsUntil', account, 3600);
         }
     } else {
         log.info(

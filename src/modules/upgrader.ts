@@ -25,7 +25,6 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             return (
                 upgrade.isCanUpgraded &&
                 !upgrade.isMaxLevel &&
-                upgrade.profitIncrement * 96 > upgrade.priceNextLevel &&
                 (!failedUpgrades[upgrade.id] ||
                     failedUpgrades[upgrade.id] < Date.now())
             );
@@ -51,6 +50,26 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
     }
 
     if (bestUpgrade.priceNextLevel > heroInfo.money) {
+        //count hours to get enough money
+        const hoursToGetMoney = Math.ceil(
+            (bestUpgrade.priceNextLevel - heroInfo.money) /
+                heroInfo.moneyPerHour
+        );
+
+        if (hoursToGetMoney > 24) {
+            failedUpgrades[bestUpgrade.id] = Date.now() + 60 * 60 * 1000;
+            log.warn(
+                Logger.color(account.clientName, Color.Cyan),
+                Logger.color(' | ', Color.Gray),
+                `Время накопления денег на улучшение`,
+                Logger.color(bestUpgrade.id, Color.Yellow),
+                `слишком большое. Пропущен на`,
+                Logger.color('1', Color.Magenta),
+                `час.`
+            );
+            return;
+        }
+
         log.info(
             Logger.color(account.clientName, Color.Cyan),
             Logger.color(' | ', Color.Gray),
