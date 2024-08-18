@@ -1,32 +1,23 @@
 import { DbSkill } from '../api/muskempire/model.js';
 
-const smartRound = (e: number) => {
-    const t = (s: number, c = 100) => {
-        return Math.round(s / c) * c;
+const smartRound = (value: number): number => {
+    const roundToNearest = (number: number, nearest: number): number => {
+        return Math.round(number / nearest) * nearest;
     };
-    return e < 50
-        ? Math.round(e)
-        : e < 100
-          ? t(e, 5)
-          : e < 500
-            ? t(e, 25)
-            : e < 1e3
-              ? t(e, 50)
-              : e < 5e3
-                ? t(e, 100)
-                : e < 1e4
-                  ? t(e, 200)
-                  : e < 1e5
-                    ? t(e, 500)
-                    : e < 5e5
-                      ? t(e, 1e3)
-                      : e < 1e6
-                        ? t(e, 5e3)
-                        : e < 5e7
-                          ? t(e, 1e4)
-                          : e < 1e8
-                            ? t(e, 5e4)
-                            : t(e, 1e5);
+
+    if (value < 50) return Math.round(value);
+    if (value < 100) return roundToNearest(value, 5);
+    if (value < 500) return roundToNearest(value, 25);
+    if (value < 1000) return roundToNearest(value, 50);
+    if (value < 5000) return roundToNearest(value, 100);
+    if (value < 10000) return roundToNearest(value, 200);
+    if (value < 100000) return roundToNearest(value, 500);
+    if (value < 500000) return roundToNearest(value, 1000);
+    if (value < 1000000) return roundToNearest(value, 5000);
+    if (value < 50000000) return roundToNearest(value, 10000);
+    if (value < 100000000) return roundToNearest(value, 50000);
+
+    return roundToNearest(value, 100000);
 };
 
 const fnCompound = (e: number, t: number, s: number) => {
@@ -50,16 +41,20 @@ const fnQuadratic = (e: number, t: number) => {
     return t * e * e;
 };
 
-const fnPayback = (e: number, t: DbSkill) => {
-    let s = [0];
-    for (let c = 1; c <= e; c++) {
-        const i = s[c - 1],
-            n = getPrice(t, c),
-            S = t.profitBasic + t.profitFormulaK * (c - 1),
-            L = smartRound(i + n / S);
-        s.push(L);
+const fnPayback = (level: number, skill: DbSkill): number => {
+    const paybackTimes = [0];
+
+    for (let currentLevel = 1; currentLevel <= level; currentLevel++) {
+        const previousPayback = paybackTimes[currentLevel - 1];
+        const price = getPrice(skill, currentLevel);
+        const profit =
+            skill.profitBasic + skill.profitFormulaK * (currentLevel - 1);
+        const paybackTime = smartRound(previousPayback + price / profit);
+
+        paybackTimes.push(paybackTime);
     }
-    return s[e];
+
+    return paybackTimes[level];
 };
 
 export const getPrice = (e: DbSkill, level: number) => {
@@ -80,23 +75,43 @@ export const getProfit = (e: DbSkill, level: number) => {
 };
 
 const calcFormula = (
-    e: string,
+    formulaType: string,
     t: number,
     s: number,
     c: number,
-    i?: DbSkill
-) => {
-    let n = s;
-    return (
-        e === 'fnCompound' && (n = fnCompound(t as number, s, c)),
-        e === 'fnLogarithmic' && (n = fnLogarithmic(t as number, s)),
-        e === 'fnLinear' && (n = fnLinear(t as number, s)),
-        e === 'fnQuadratic' && (n = fnQuadratic(t as number, s)),
-        e === 'fnCubic' && (n = fnCubic(t as number, s)),
-        e === 'fnExponential' && (n = fnExponential(t as number, s, c)),
-        e === 'fnPayback' && (n = fnPayback(t, i!)),
-        smartRound(n)
-    );
+    skill?: DbSkill
+): number => {
+    let result = s;
+
+    switch (formulaType) {
+        case 'fnCompound':
+            result = fnCompound(t, s, c);
+            break;
+        case 'fnLogarithmic':
+            result = fnLogarithmic(t, s);
+            break;
+        case 'fnLinear':
+            result = fnLinear(t, s);
+            break;
+        case 'fnQuadratic':
+            result = fnQuadratic(t, s);
+            break;
+        case 'fnCubic':
+            result = fnCubic(t, s);
+            break;
+        case 'fnExponential':
+            result = fnExponential(t, s, c);
+            break;
+        case 'fnPayback':
+            if (skill) {
+                result = fnPayback(t, skill);
+            }
+            break;
+        default:
+            throw new Error(`Unknown formula type: ${formulaType}`);
+    }
+
+    return smartRound(result);
 };
 
 export function formatNumber(number: number) {

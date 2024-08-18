@@ -41,79 +41,74 @@ export const getUpgrades = async (token: string): Promise<Upgrade[]> => {
     } = await getProfileInfo(token);
 
     return dbSkills
-        .filter((dbSkill) => dbSkill.key in skillLevels)
+        .filter((dbSkill) => skillLevels.hasOwnProperty(dbSkill.key))
         .map((dbSkill) => {
             const currentLevel = skillLevels[dbSkill.key].level;
             const nextLevel = currentLevel + 1;
-
-            const profitCurrent = getProfit(dbSkill, currentLevel);
-            const profitNextLevel = getProfit(dbSkill, currentLevel + 1);
             const isMaxLevel = currentLevel >= dbSkill.maxLevel;
 
+            const profitCurrent = getProfit(dbSkill, currentLevel);
+            const profitNextLevel = getProfit(dbSkill, nextLevel);
+
             const skillRequirements = arrayByKey(dbSkill.levels, 'level');
-            const skillRequirement =
-                !isMaxLevel && String(nextLevel) in skillRequirements
-                    ? skillRequirements[String(nextLevel)]
-                    : null;
+            const skillRequirement = !isMaxLevel
+                ? skillRequirements[nextLevel]
+                : null;
 
             const isCooldownOver = checkCooldown(dbSkill, skillLevels);
 
-            let isRequiredSkillsLevelsSufficient = !0;
-            let isCanUpgraded = !0;
-            let isLevelSufficient = !0;
-            let isFriendsSufficient = !0;
-            let D: Record<any, any> = {};
+            let isCanUpgraded = true;
+            let missingRequirements: Record<string, number> = {};
 
-            skillRequirement &&
-                ((isLevelSufficient =
-                    heroInfo.level >= skillRequirement.requiredHeroLevel),
-                (isFriendsSufficient =
-                    profileInfo.friends >= skillRequirement.requiredFriends),
-                isEmptyObject(skillRequirement?.requiredSkills) ||
-                    Object.entries(skillRequirement?.requiredSkills!).forEach(
-                        ([N, M]) => {
-                            (!(N in skillLevels) || M > skillLevels[N].level) &&
-                                ((isRequiredSkillsLevelsSufficient = !1),
-                                (D[N] = M));
-                        }
-                    ),
-                (isCanUpgraded =
-                    isRequiredSkillsLevelsSufficient &&
+            if (skillRequirement) {
+                const isLevelSufficient =
+                    heroInfo.level >= skillRequirement.requiredHeroLevel;
+                const isFriendsSufficient =
+                    profileInfo.friends >= skillRequirement.requiredFriends;
+                const isRequiredSkillsLevelsSufficient = Object.entries(
+                    skillRequirement.requiredSkills || {}
+                ).every(([requiredSkill, requiredLevel]) => {
+                    const skillLevel = skillLevels[requiredSkill]?.level || 0;
+                    if (skillLevel < requiredLevel) {
+                        missingRequirements[requiredSkill] = requiredLevel;
+                        return false;
+                    }
+                    return true;
+                });
+
+                isCanUpgraded =
                     isLevelSufficient &&
-                    isCooldownOver &&
-                    isFriendsSufficient));
+                    isFriendsSufficient &&
+                    isRequiredSkillsLevelsSufficient &&
+                    isCooldownOver;
+            }
 
             return {
                 id: dbSkill.key,
-                isActive: skillLevels[dbSkill.key].level > 0,
-                currentLevel: currentLevel,
-                isMaxLevel: isMaxLevel,
+                isActive: currentLevel > 0,
+                currentLevel,
+                isMaxLevel,
                 isMaxLevelMore: currentLevel > dbSkill.maxLevel,
-                isPenultimateLevel: currentLevel + 1 === dbSkill.maxLevel,
+                isPenultimateLevel: nextLevel === dbSkill.maxLevel,
                 levels: dbSkill.levels,
                 profitNextLevel,
                 profitCurrent,
-                isCanUpgraded,
-                priceNextLevel: getPrice(
-                    dbSkill,
-                    skillLevels[dbSkill.key].level + 1
-                ),
+                isCanUpgraded: isCanUpgraded,
+                priceNextLevel: getPrice(dbSkill, nextLevel),
                 profitIncrement: profitNextLevel - profitCurrent,
             };
         });
 };
 
-function checkCooldown(dbSkill: DbSkill, skillLevels: SkillsResponse) {
+function checkCooldown(dbSkill: DbSkill, skillLevels: SkillsResponse): boolean {
     const skillInfo = skillLevels[dbSkill.key];
+
     if (!skillInfo.finishUpgradeDate) {
         return true;
     }
 
     const finishUpgradeDate = new Date(skillInfo.finishUpgradeDate);
-
-    const now = new Date();
-
-    return now > finishUpgradeDate;
+    return new Date() > finishUpgradeDate;
 }
 
 function arrayByKey<T extends Record<string, any>>(
@@ -124,8 +119,4 @@ function arrayByKey<T extends Record<string, any>>(
         acc[obj[key]] = obj;
         return acc;
     }, {});
-}
-
-function isEmptyObject(obj: any) {
-    return Object.keys(obj).length === 0;
 }

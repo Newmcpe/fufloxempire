@@ -16,8 +16,7 @@ const axiosClient = axios.create({
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-site',
         'User-Agent': new UserAgent({ deviceCategory: 'mobile' }).toString(),
-        'Sec-Ch-Ua':
-            '"Not/A)Brand";v="8", "Chromium";v="126", "Android WebView";v="126"',
+        'Sec-Ch-Ua': generateRandomSecChUa(),
         'Sec-Ch-Ua-Mobile': '?1',
         'Sec-Ch-Ua-Platform': '"Android"',
         'X-Requested-With': 'org.telegram.messenger.web',
@@ -33,8 +32,9 @@ axiosClient.interceptors.request.use(
         }
 
         const o = !!config.data;
-
-        config.headers['Api-Hash'] = finishHash(o ? config.data : '{}', time);
+        config.headers['Api-Hash'] = Md5.hashStr(
+            `${time}_${JSON.stringify(o ? config.data : '{}')}`
+        );
         config.headers['Api-Time'] = time;
 
         return config;
@@ -44,7 +44,34 @@ axiosClient.interceptors.request.use(
     }
 );
 
-const finishHash = (data: Object, time: number) =>
-    Md5.hashStr(`${time}_${JSON.stringify(data)}`);
+function generateRandomSecChUa(): string {
+    const brands = [
+        '"Not/A)Brand"',
+        '"Chromium"',
+        '"Google Chrome"',
+        '"Firefox"',
+        '"Safari"',
+        '"Edge"',
+        '"Opera"',
+        '"Brave"',
+        '"Vivaldi"',
+        '"Android WebView"',
+    ];
+
+    // Function to generate a random version number
+    const randomVersion = () => Math.floor(Math.random() * 20) + 100;
+
+    // Randomly shuffle the brands array
+    const shuffledBrands = brands.sort(() => 0.5 - Math.random());
+
+    // Generate the Sec-Ch-Ua string
+    return shuffledBrands
+        .slice(0, 3)
+        .map((brand, index) => {
+            const version = randomVersion();
+            return `${brand};v="${index + 1 === 1 ? 8 : version}"`;
+        })
+        .join(', ');
+}
 
 export { axiosClient };

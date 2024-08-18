@@ -70,7 +70,6 @@ export const negotiations = async (
     if (!muskResponse.opponent) return;
 
     const { hero, opponent, fight } = muskResponse;
-
     const result = fight.winner === hero.id;
 
     if (!result) {
@@ -100,12 +99,11 @@ export const negotiations = async (
         wins[account.clientName]++;
         loseStreak[account.clientName] = 0;
     }
+
     await claimPvp(apiKey);
 
-    const winRate =
-        (wins[account.clientName] /
-            (wins[account.clientName] + losses[account.clientName])) *
-        100;
+    const totalFights = wins[account.clientName] + losses[account.clientName];
+    const winRate = (wins[account.clientName] / totalFights) * 100;
 
     log.info(
         Logger.color(account.clientName, Color.Cyan),

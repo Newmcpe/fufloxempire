@@ -21,28 +21,26 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
     } = await getHeroInfo(apiKey);
 
     const bestUpgrade = upgrades
-        .filter((upgrade) => {
-            return (
+        .filter(
+            (upgrade) =>
                 upgrade.isCanUpgraded &&
                 !upgrade.isMaxLevel &&
                 (!ignoredUpgrades[upgrade.id] ||
                     ignoredUpgrades[upgrade.id] < Date.now())
-            );
-        })
-        .reduce(
-            (best, upgrade) =>
-                best === null ||
-                upgrade.profitIncrement / upgrade.priceNextLevel >
-                    best.profitIncrement / best.priceNextLevel
-                    ? upgrade
-                    : best,
-            null as Upgrade | null
-        );
+        )
+        .reduce<Upgrade | null>((best, upgrade) => {
+            const upgradeRatio =
+                upgrade.profitIncrement / upgrade.priceNextLevel;
+            const bestRatio = best
+                ? best.profitIncrement / best.priceNextLevel
+                : -Infinity;
+
+            return upgradeRatio > bestRatio ? upgrade : best;
+        }, null);
 
     if (!bestUpgrade) {
         log.info(
             Logger.color(account.clientName, Color.Cyan),
-            Logger.color(' | ', Color.Gray),
             `Нет доступных улучшений`
         );
         setCooldown('noUpgradesUntil', account, 600);
@@ -59,7 +57,6 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
             ignoredUpgrades[bestUpgrade.id] = Date.now() + 60 * 60 * 1000;
             log.warn(
                 Logger.color(account.clientName, Color.Cyan),
-                Logger.color(' | ', Color.Gray),
                 `Время накопления денег на улучшение`,
                 Logger.color(bestUpgrade.id, Color.Yellow),
                 `слишком большое. Пропущен на`,
@@ -123,6 +120,7 @@ export const upgrader = async (account: MuskEmpireAccount, apiKey: string) => {
     heroInfo.money -= bestUpgrade.priceNextLevel;
 
     const response = await improveSkill(apiKey, bestUpgrade.id);
+
     if (
         response.data.success === false &&
         response.data.error === 'skill requirements fail: upgrade not finished'
